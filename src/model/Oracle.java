@@ -2,10 +2,7 @@ package model;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 
 public class Oracle {
@@ -24,7 +21,8 @@ public class Oracle {
 
         try {
             this.conn = DriverManager.getConnection("jdbc:oracle:thin:@miage03.dmiage.u-paris10.fr:1521:miage", "videlcro", "miage");
-//"jdbc:oracle:thin:@172.19.255.3:1521:MIAGE"
+            //"jdbc:oracle:thin:@172.19.255.3:1521:MIAGE"
+            System.out.println("Connextion réussie");
 
         } catch (SQLException ex) {
             System.err.println("Erreur de connexion à la base de données.");
@@ -38,4 +36,5 @@ public class Oracle {
             System.err.println("Erreur de deconnexion à la base de données.");
         }
     }
+
 }
