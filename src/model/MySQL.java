@@ -5,33 +5,38 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 
-public class Oracle {
+public class MySQL {
     private Connection conn;
 
-    public Oracle() {
+    public MySQL() {
         super();
     }
 
-    private void connexion() throws SQLException, ClassNotFoundException {
+    public void connexion() throws SQLException, ClassNotFoundException {
         try {
-            Class.forName("oracle.jdbc.driver.OracleDriver");
+            /*  The newInstance() call is a work around for some
+                broken Java implementations */
+            Class.forName("com.mysql.jdbc.Driver").newInstance();
         } catch (ClassNotFoundException ex) {
             System.err.println("Erreur de chargement du driver.");
+        } catch (IllegalAccessException | InstantiationException e) {
+            e.printStackTrace();
         }
 
         try {
-            this.conn = DriverManager.getConnection("jdbc:oracle:thin:@miage03.dmiage.u-paris10.fr:1521:miage", "videlcro", "miage");
+            this.conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/id_td1?autoReconnect=true&useSSL=false", "root", "");
             //"jdbc:oracle:thin:@172.19.255.3:1521:MIAGE"
-            System.out.println("Connextion réussie");
+            System.out.println("Connexion réussie");
 
         } catch (SQLException ex) {
             System.err.println("Erreur de connexion à la base de données.");
         }
     }
 
-    private void deconnexion() {
+    public void deconnexion() {
         try {
             this.conn.close();
+            System.out.println("Deconnexion réussie");
         } catch (SQLException ex) {
             System.err.println("Erreur de deconnexion à la base de données.");
         }
