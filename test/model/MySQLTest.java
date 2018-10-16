@@ -9,7 +9,7 @@ import org.junit.Test;
 import java.util.List;
 
 public class MySQLTest {
-    private MySQL srcMySQL = new MySQL();
+    private MySQL srcMySQL = MySQL.getInstance();
 
     @Before
     public void setUp() {
@@ -21,7 +21,7 @@ public class MySQLTest {
 
     @Test
     public void connexion() {
-        Assert.assertEquals(true, this.srcMySQL.connexion() );
+        Assert.assertTrue(this.srcMySQL.connexion() );
         System.out.println("MySQLTest-Connexion s'est bien déroulé !");
     }
 
@@ -29,7 +29,7 @@ public class MySQLTest {
     public void deconnexion() {
         // Connexion obligatoire avant
         this.srcMySQL.connexion();
-        Assert.assertEquals(true, this.srcMySQL.deconnexion());
+        Assert.assertTrue( this.srcMySQL.deconnexion());
         System.out.println("MySQLTest-Deconnexion s'est bien déroulé !");
     }
 
@@ -43,5 +43,30 @@ public class MySQLTest {
         }
 
         this.srcMySQL.deconnexion();
+    }
+
+    @Test
+    public void getInstance() {
+        Assert.assertNotNull(MySQL.getInstance());
+    }
+
+    @Test
+    public void setMediateurReq() {
+    }
+
+    @Test
+    public void reqMedtoReqSrc() {
+    }
+
+    @Test
+    public void executeReq() {
+    }
+
+    @Test
+    public void getResFromExecuteReq() {
+    }
+
+    @Test
+    public void tradResToMed() {
     }
 }

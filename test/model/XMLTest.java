@@ -8,7 +8,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class XMLTest {
-    private XML srcXML = new XML();
+    private XML srcXML = XML.getInstance();
 
     @Test
     public void lire_XML() {

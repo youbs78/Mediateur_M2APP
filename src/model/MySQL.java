@@ -7,39 +7,42 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Classe Extracteur/Adaptateur pour la source de donnees MySQL (originellement Oracle)
+ *
+ * @author kevin
+ * @version 0.1
+ */
 // Pour ajouter des tests unitaires, simplement faire Alt+Enter
 // sur le nom de la classe et "Create test"
 public class MySQL implements ExtracteurItf {
-    // Singleton pour bonne pratique
-    private static MySQL INSTANCE = null;
+    private static MySQL INSTANCE = null; // Singleton pour bonne pratique
     private Connection conn;
-    // Représente une instruction SQL
-    private Statement stmt;
+    private Statement stmt; // Représente une instruction SQL
 
     // SQL Query
     private static final String QUERY_FIND_ALL_COURS = "SELECT * FROM cours";
 
-    private MySQL(){}
+    private MySQL() {
+    }
 
-    public static MySQL getInstance(){
-        if(INSTANCE == null){
+    public static MySQL getInstance() {
+        if (INSTANCE == null) {
             INSTANCE = new MySQL();
         }
         return INSTANCE;
     }
 
     @Override
-    public boolean connexion(){
+    public boolean connexion() {
         try {
             /*  The newInstance() call is a work around for some
                 broken Java implementations */
             Class.forName("com.mysql.jdbc.Driver").newInstance();
-        }
-        catch (ClassNotFoundException ex) {
+        } catch (ClassNotFoundException ex) {
             System.err.println("Erreur de chargement du driver.");
             return false;
-        }
-        catch (IllegalAccessException | InstantiationException e) {
+        } catch (IllegalAccessException | InstantiationException e) {
             e.printStackTrace();
             System.err.println("Erreur de chargement du driver.");
             return false;
@@ -49,8 +52,7 @@ public class MySQL implements ExtracteurItf {
             this.conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/id_td1?autoReconnect=true&useSSL=false", "root", "");
             //"jdbc:oracle:thin:@172.19.255.3:1521:MIAGE"
             return true;
-        }
-        catch (SQLException ex) {
+        } catch (SQLException ex) {
             System.err.println("Erreur de connexion à la base de données.");
             return false;
         }
@@ -92,14 +94,14 @@ public class MySQL implements ExtracteurItf {
         return null;
     }
 
-    public List<Cours> findAllCours(){
+    public List<Cours> findAllCours() {
         List<Cours> cours = new ArrayList<Cours>();
 
         try {
             this.stmt = this.conn.createStatement();
             ResultSet rset = this.stmt.executeQuery(MySQL.QUERY_FIND_ALL_COURS);
 
-            while(rset.next()){
+            while (rset.next()) {
                 Cours c = new Cours();
                 c.setId_cours(rset.getInt("NumCours"));
                 c.setLibele(rset.getString("libele"));
