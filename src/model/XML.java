@@ -16,7 +16,12 @@ public class XML implements ExtracteurItf {
     // Singleton pour bonne pratique
     private static XML INSTANCE = new XML();
 
-    public static XML getINSTANCE() {
+    private XML(){}
+
+    public static XML getInstance(){
+        if(INSTANCE == null){
+            INSTANCE = new XML();
+        }
         return INSTANCE;
     }
 

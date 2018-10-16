@@ -2,6 +2,7 @@ package client;
 
 
 import contract.MediateurItf;
+import model.MySQL;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ public class Mediateur implements MediateurItf {
 
     @Override
     public void sendReq(String reqMed) {
-
+        MySQL src2 = MySQL.getInstance();
     }
 
     @Override

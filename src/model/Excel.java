@@ -16,7 +16,12 @@ public class Excel implements ExtracteurItf {
 	private Connection conn;	// Objet connexion une fois celle-ci établie
 	private Statement statement;	// Objet statement une fois la connexion etablie
 
-    public static Excel getINSTANCE() {
+    private Excel(){}
+
+    public static Excel getInstance(){
+        if(INSTANCE == null){
+            INSTANCE = new Excel();
+        }
         return INSTANCE;
     }
 

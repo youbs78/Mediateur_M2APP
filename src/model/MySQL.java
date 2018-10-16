@@ -11,7 +11,7 @@ import java.util.List;
 // sur le nom de la classe et "Create test"
 public class MySQL implements ExtracteurItf {
     // Singleton pour bonne pratique
-    private static MySQL INSTANCE = new MySQL();
+    private static MySQL INSTANCE = null;
     private Connection conn;
     // Représente une instruction SQL
     private Statement stmt;
@@ -19,7 +19,12 @@ public class MySQL implements ExtracteurItf {
     // SQL Query
     private static final String QUERY_FIND_ALL_COURS = "SELECT * FROM cours";
 
-    private static MySQL getInstance(){
+    private MySQL(){}
+
+    public static MySQL getInstance(){
+        if(INSTANCE == null){
+            INSTANCE = new MySQL();
+        }
         return INSTANCE;
     }
 
