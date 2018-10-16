@@ -29,6 +29,7 @@ public interface ExtracteurItf {
     /**
      * Méthode/fonction pour recevoir les requêtes du médiateur respectant
      * le schéma conceptuel global
+     * La requête doit être mise en minucule !!!
      *
      * @param reqMed La requête SQL envoyé par le médiateur
      */

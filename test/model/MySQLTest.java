@@ -47,7 +47,7 @@ public class MySQLTest {
 
     @Test
     public void getInstance() {
-        Assert.assertNotNull(MySQL.getInstance());
+        Assert.assertEquals(MySQL.class, MySQL.getInstance().getClass());
     }
 
     @Test
@@ -56,6 +56,11 @@ public class MySQLTest {
 
     @Test
     public void reqMedtoReqSrc() {
+        String reqMed = "SELECT Enseignant.Nom, Enseignant.Prenom, Enseignant.adresseMail " +
+                        "FROM Enseignant";
+        String reqSrcWanted =   "select enseignant.nom, enseignant.prenom, 'Source 2' as enseignant.adressemail " +
+                                "from enseignant";
+        Assert.assertEquals(reqSrcWanted, this.srcMySQL.reqMedtoReqSrc(reqMed));
     }
 
     @Test
