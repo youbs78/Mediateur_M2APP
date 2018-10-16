@@ -22,26 +22,13 @@ public interface ExtracteurItf {
     // et chercher le template qui correspond à la requête du médiateur ;
     String reqMedtoReqSrc();
 
-    //Assurer l'exécution des différentes requêtes
+    // Méthode/fonction pour exécuter (interroger la source) les requêtes du médiateur sur la source ;
     void executeReq(String req);
+
+    // Méthode/fonction pour récupérer le résultat de la requête
+    void getResFromExecuteReq(String req);
+
+    // Méthode/fonction pour traduire le résultat et l’envoyer au médiateur.
+    void tradResToMed();
+
 }
-
-
-
-
-
-
-
-//Les requis
-
-
-
-
-
-
-
-//Méthode/fonction pour exécuter (interroger la source) les requêtes du médiateur sur la source ;
-
-//Méthode/fonction pour récupérer le résultat de la requête ;
-
-//Méthode/fonction pour traduire le résultat et l’envoyer au médiateur.
