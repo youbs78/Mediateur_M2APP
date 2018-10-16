@@ -10,7 +10,7 @@ import org.xml.sax.SAXException;
 public class XML {
 
     //Connection à la source
-    public static void lire_XML(String path_fichier) throws SAXException, IOException, ParserConfigurationException{
+    public void lire_XML(String path_fichier) throws SAXException, IOException, ParserConfigurationException{
 
         DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
         Document doc = builderFactory.newDocumentBuilder().parse(new FileInputStream(path_fichier));
@@ -230,17 +230,6 @@ public class XML {
         //endregion
     }
 
-    public static void main(String[] args){
-        try {
-            lire_XML("/Users/arnoldsoupramanien/IdeaProjects/Mediateur_M2APP/src/data/Univ_BD_3.xml");
-        } catch (SAXException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        }
-    }
 }
 
 //Assurer l'exécution des différentes requêtes
