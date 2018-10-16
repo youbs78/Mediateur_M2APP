@@ -1,15 +1,17 @@
 package model;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
-import contract.XMLItf;
-import org.w3c.dom.*;
+import contract.ExtracteurItf;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-public class XML implements XMLItf {
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.FileInputStream;
+import java.io.IOException;
+
+public class XML implements ExtracteurItf {
 
     @Override
     public boolean connexion() {

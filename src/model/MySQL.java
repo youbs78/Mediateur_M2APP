@@ -1,6 +1,6 @@
 package model;
 
-import contract.MySQLItf;
+import contract.ExtracteurItf;
 import domain.Cours;
 
 import java.sql.*;
@@ -9,7 +9,7 @@ import java.util.List;
 
 // Pour ajouter des tests unitaires, simplement faire Alt+Enter
 // sur le nom de la classe et "Create test"
-public class MySQL implements MySQLItf {
+public class MySQL implements ExtracteurItf {
     // Singleton pour bonne pratique
     private static MySQL INSTANCE = new MySQL();
     private Connection conn;
@@ -62,7 +62,6 @@ public class MySQL implements MySQLItf {
         }
     }
 
-    @Override
     public List<Cours> findAllCours(){
         List<Cours> cours = new ArrayList<Cours>();
 

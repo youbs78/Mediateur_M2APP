@@ -1,6 +1,6 @@
 package model;
 
-import contract.ExcelItf;
+import contract.ExtracteurItf;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -9,7 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 
-public class Excel implements ExcelItf{
+public class Excel implements ExtracteurItf {
 	private Connection conn;	// Objet connexion une fois celle-ci établie
 	private Statement statement;	// Objet statement une fois la connexion etablie
 	
