@@ -8,19 +8,28 @@ public interface ExtracteurItf {
     //Méthode/fonction de connexion et déconnexion à la source de données crée préalablement qui suit un schéma conceptuel décrit dans un catalogue (dans la BDD/fichier) ;
     boolean connexion();
     boolean deconnexion();
-    //Méthode/fonction pour recevoir les requêtes du médiateur ;
-    void setMediateurReq();
-    //Générer une table de correspondance entre la source et le médiateur pour décrire le template des attributs ;
+
+    //Permettre l'envoi et la réception de requêtes depuis/vers le médiateur
+    String getSrcReq();
+    // Méthode/fonction pour recevoir les requêtes du médiateur ;
+    void setMediateurReq(String req);
+
+    // Générer une table de correspondance entre la source et le médiateur pour décrire le template des attributs ;
     void genererTableCorr();
-    //Méthode/fonction pour traduire la requête (vue) du médiateur par le schéma de la source en parcourant la table de correspondance générée par le générateur d’adaptateur et chercher le template qui correspond à la requête du médiateur ;
 
+    // Méthode/fonction pour traduire la requête (vue) du médiateur par le schéma de la source
+    // en parcourant la table de correspondance générée par le générateur d’adaptateur
+    // et chercher le template qui correspond à la requête du médiateur ;
+    String reqMedtoReqSrc();
 
+    //Assurer l'exécution des différentes requêtes
+    void executeReq(String req);
 }
 
 
-//Assurer l'exécution des différentes requêtes
 
-//Permettre l'envoi et la réception de requêtes depuis/vers le médiateur
+
+
 
 
 //Les requis
