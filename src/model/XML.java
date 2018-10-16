@@ -10,8 +10,15 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.List;
 
 public class XML implements ExtracteurItf {
+    // Singleton pour bonne pratique
+    private static XML INSTANCE = new XML();
+
+    public static XML getINSTANCE() {
+        return INSTANCE;
+    }
 
     @Override
     public boolean connexion() {
@@ -21,6 +28,31 @@ public class XML implements ExtracteurItf {
     @Override
     public boolean deconnexion() {
         return false;
+    }
+
+    @Override
+    public void setMediateurReq(String reqMed) {
+
+    }
+
+    @Override
+    public String reqMedtoReqSrc(String reqMed) {
+        return null;
+    }
+
+    @Override
+    public void executeReq(String reqSrc) {
+
+    }
+
+    @Override
+    public List<Object> getResFromExecuteReq(String req) {
+        return null;
+    }
+
+    @Override
+    public List<Object> tradResToMed(List<Object> resSrc) {
+        return null;
     }
 
     //Connection à la source

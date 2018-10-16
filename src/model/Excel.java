@@ -7,19 +7,20 @@ import java.sql.DriverManager;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 //test
 public class Excel implements ExtracteurItf {
+    // Singleton pour bonne pratique
+    private static Excel INSTANCE = new Excel();
 	private Connection conn;	// Objet connexion une fois celle-ci établie
 	private Statement statement;	// Objet statement une fois la connexion etablie
-	
-	public Excel()
-	{
-		super();
-	}
 
+    public static Excel getINSTANCE() {
+        return INSTANCE;
+    }
 
-	@Override
+    @Override
 	public boolean connexion()
 	{
 		try
@@ -61,8 +62,33 @@ public class Excel implements ExtracteurItf {
 		    return false;
 		}
 	}
-	
-	// Affiche les erreurs quand la connexion a echoué
+
+    @Override
+    public void setMediateurReq(String reqMed) {
+
+    }
+
+    @Override
+    public String reqMedtoReqSrc(String reqMed) {
+        return null;
+    }
+
+    @Override
+    public void executeReq(String reqSrc) {
+
+    }
+
+    @Override
+    public List<Object> getResFromExecuteReq(String req) {
+        return null;
+    }
+
+    @Override
+    public List<Object> tradResToMed(List<Object> resSrc) {
+        return null;
+    }
+
+    // Affiche les erreurs quand la connexion a echoué
 		public void displaySQLErrors(SQLException e)
 	 {
 			System.out.println("SQLException: " + e.getMessage());

@@ -62,6 +62,31 @@ public class MySQL implements ExtracteurItf {
         }
     }
 
+    @Override
+    public void setMediateurReq(String reqMed) {
+
+    }
+
+    @Override
+    public String reqMedtoReqSrc(String reqMed) {
+        return null;
+    }
+
+    @Override
+    public void executeReq(String reqSrc) {
+
+    }
+
+    @Override
+    public List<Object> getResFromExecuteReq(String req) {
+        return null;
+    }
+
+    @Override
+    public List<Object> tradResToMed(List<Object> resSrc) {
+        return null;
+    }
+
     public List<Cours> findAllCours(){
         List<Cours> cours = new ArrayList<Cours>();
 
