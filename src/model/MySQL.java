@@ -1,8 +1,10 @@
 package model;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import domain.Cours;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 // Pour ajouter des tests unitaires, simplement faire Alt+Enter
 // sur le nom de la classe et "Create test"
@@ -10,6 +12,11 @@ public class MySQL {
     // Singleton pour bonne pratique
     private static MySQL INSTANCE = new MySQL();
     private Connection conn;
+    // Représente une instruction SQL
+    private Statement stmt;
+
+    // SQL Query
+    private static final String QUERY_FIND_ALL_COURS = "SELECT * FROM cours";
 
     private static MySQL getInstance(){
         return INSTANCE;
@@ -34,7 +41,6 @@ public class MySQL {
         try {
             this.conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/id_td1?autoReconnect=true&useSSL=false", "root", "");
             //"jdbc:oracle:thin:@172.19.255.3:1521:MIAGE"
-            System.out.println("Connexion réussie");
             return true;
         }
         catch (SQLException ex) {
@@ -46,12 +52,43 @@ public class MySQL {
     public boolean deconnexion() {
         try {
             this.conn.close();
-            System.out.println("Deconnexion réussie");
             return true;
         } catch (SQLException ex) {
             System.err.println("Erreur de deconnexion à la base de données.");
             return false;
         }
+    }
+
+    public List<Cours> findAllCours(){
+        List<Cours> cours = new ArrayList<Cours>();
+
+        try {
+            this.stmt = this.conn.createStatement();
+            ResultSet rset = this.stmt.executeQuery(MySQL.QUERY_FIND_ALL_COURS);
+
+            while(rset.next()){
+                Cours c = new Cours();
+                c.setId_cours(rset.getInt("NumCours"));
+                c.setLibele(rset.getString("libele"));
+                c.setNiveau(rset.getString("niveau"));
+                c.setType(rset.getString("TYPE"));
+                cours.add(c);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (this.stmt != null) {
+                try {
+                    // Le stmt.close ferme automatiquement le rset.
+                    this.stmt.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return cours;
     }
 
 }
