@@ -1,6 +1,8 @@
 package client;
 
 
-public class Mediateur {
+import contract.MediateurItf;
+
+public class Mediateur implements MediateurItf {
     /*  */
 }

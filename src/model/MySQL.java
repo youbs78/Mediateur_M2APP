@@ -1,5 +1,6 @@
 package model;
 
+import contract.MySQLItf;
 import domain.Cours;
 
 import java.sql.*;
@@ -8,7 +9,7 @@ import java.util.List;
 
 // Pour ajouter des tests unitaires, simplement faire Alt+Enter
 // sur le nom de la classe et "Create test"
-public class MySQL {
+public class MySQL implements MySQLItf {
     // Singleton pour bonne pratique
     private static MySQL INSTANCE = new MySQL();
     private Connection conn;
@@ -22,6 +23,7 @@ public class MySQL {
         return INSTANCE;
     }
 
+    @Override
     public boolean connexion(){
         try {
             /*  The newInstance() call is a work around for some
@@ -49,6 +51,7 @@ public class MySQL {
         }
     }
 
+    @Override
     public boolean deconnexion() {
         try {
             this.conn.close();
@@ -59,6 +62,7 @@ public class MySQL {
         }
     }
 
+    @Override
     public List<Cours> findAllCours(){
         List<Cours> cours = new ArrayList<Cours>();
 
