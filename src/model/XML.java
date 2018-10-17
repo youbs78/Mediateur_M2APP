@@ -10,6 +10,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -33,13 +34,13 @@ public class XML implements ExtracteurItf {
     }
 
     @Override
-    public boolean connexion() {
-        return false;
+    public void connexion() {
+
     }
 
     @Override
-    public boolean deconnexion() {
-        return false;
+    public void deconnexion() {
+
     }
 
     @Override
@@ -58,12 +59,12 @@ public class XML implements ExtracteurItf {
     }
 
     @Override
-    public List<Object> getResFromExecuteReq(String req) {
+    public List<HashMap<String, Object>> getResFromExecuteReq() {
         return null;
     }
 
     @Override
-    public List<Object> tradResToMed(List<Object> resSrc) {
+    public List<HashMap<String, Object>> tradResToMed(List<HashMap<String, Object>> resSrc) {
         return null;
     }
 

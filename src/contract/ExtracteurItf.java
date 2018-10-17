@@ -1,5 +1,6 @@
 package contract;
 
+import java.util.HashMap;
 import java.util.List;
 
 public interface ExtracteurItf {
@@ -12,19 +13,15 @@ public interface ExtracteurItf {
      * Méthode/fonction de connexion à la source de données
      * crée préalablement qui suit un schéma conceptuel décrit dans un catalogue
      * dans la BDD/fichier) ;
-     *
-     * @return vrai (true) si la connexion s'est bien passée
      */
-    boolean connexion();
+    void connexion();
 
     /**
      * Méthode/fonction de déconnexion à la source de données
      * crée préalablement qui suit un schéma conceptuel décrit dans un catalogue
      * dans la BDD/fichier) ;
-     *
-     * @return vrai (true) si la déconnexion s'est bien passée
      */
-    boolean deconnexion();
+    void deconnexion();
 
     /**
      * Méthode/fonction pour recevoir les requêtes du médiateur respectant
@@ -49,6 +46,7 @@ public interface ExtracteurItf {
     /**
      * Méthode/fonction pour exécuter (interroger la source) les requêtes du médiateur sur la source
      *
+     * Precondition: Connexion doit être établie avec la BDD
      * @param reqSrc La requête SQL de la source à exécuter
      */
     void executeReq(String reqSrc);
@@ -56,18 +54,18 @@ public interface ExtracteurItf {
     /**
      * Méthode/fonction pour récupérer le résultat de la requête
      *
-     * @param req La requête SQL à exécuter
-     * @return La liste de résultat obtenu par la requête source
+     * Precondition: Requête doit déjà avoir été exécutée
+     * @return La hashmap de résultat obtenu par la requête source
      */
-    List<Object> getResFromExecuteReq(String req);
+    List<HashMap<String, Object>> getResFromExecuteReq();
 
     /**
      * Méthode/fonction pour traduire le résultat et l’envoyer au médiateur.
      *
      * @param resSrc La liste de résultat obtenu par la requête source
-     * @return La liste de résultat traduite selon le schéma conceptuel global
+     * @return La hashmap de résultat traduite selon le schéma conceptuel global
      */
-    List<Object> tradResToMed(List<Object> resSrc);
+    List<HashMap<String, Object>> tradResToMed(List<HashMap<String, Object>>resSrc);
 
 
 }

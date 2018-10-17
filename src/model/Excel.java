@@ -7,6 +7,7 @@ import java.sql.DriverManager;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -32,7 +33,7 @@ public class Excel implements ExtracteurItf {
     }
 
     @Override
-    public boolean connexion() {
+    public void connexion() {
         try {
             Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
             //Class.forName("com.hxtt.sql.excel.ExcelDriver");
@@ -44,22 +45,19 @@ public class Excel implements ExtracteurItf {
             this.conn = DriverManager.getConnection("jdbc:odbc:data.Source1", "", "");
             statement = conn.createStatement();
             System.out.println("Connexion etablie");
-            return true;
+
         } catch (SQLException ex) {
             System.err.println("Excel Erreur de connexion à la base de données.");
         }
-        return false;
     }
 
     @Override
-    public boolean deconnexion() {
+    public void deconnexion() {
         try {
             this.conn.close();
             System.out.println("Connexion terminée");
-            return true;
         } catch (SQLException ex) {
             System.err.println("Excel Erreur de deconnexion à la base de données");
-            return false;
         }
     }
 
@@ -79,12 +77,12 @@ public class Excel implements ExtracteurItf {
     }
 
     @Override
-    public List<Object> getResFromExecuteReq(String req) {
+    public List<HashMap<String, Object>> getResFromExecuteReq() {
         return null;
     }
 
     @Override
-    public List<Object> tradResToMed(List<Object> resSrc) {
+    public List<HashMap<String, Object>> tradResToMed(List<HashMap<String, Object>> resSrc) {
         return null;
     }
 
