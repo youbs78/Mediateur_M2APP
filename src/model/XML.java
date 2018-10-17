@@ -39,7 +39,7 @@ public class XML implements ExtracteurItf {
     @Override
     public void connexion() {
         try {
-            lire_XML("src/data/Univ_BD_3.xml");
+            lire_XML("data/Univ_BD_3.xml");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -70,7 +70,7 @@ public class XML implements ExtracteurItf {
         try {
             //Connexion à la source
             DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-            Document doc = builderFactory.newDocumentBuilder().parse(new FileInputStream("src/data/Univ_BD_3.xml"));
+            Document doc = builderFactory.newDocumentBuilder().parse(new FileInputStream("data/Univ_BD_3.xml"));
 
             //Définit la requête
             XPath xPath = XPathFactory.newInstance().newXPath();
