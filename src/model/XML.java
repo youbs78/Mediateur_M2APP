@@ -8,6 +8,9 @@ import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
@@ -35,7 +38,11 @@ public class XML implements ExtracteurItf {
 
     @Override
     public void connexion() {
-
+        try {
+            lire_XML("src/data/Univ_BD_3.xml");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -55,7 +62,48 @@ public class XML implements ExtracteurItf {
 
     @Override
     public void executeReq(String reqSrc) {
+        //XPath est utilisé pour le requêtage des données
+        //XPath est un langage de requête pour localiser une portion d'un document XML
+        NodeList L ;
+        Element E, E_1;
 
+        try {
+            //Connexion à la source
+            DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+            Document doc = builderFactory.newDocumentBuilder().parse(new FileInputStream("src/data/Univ_BD_3.xml"));
+
+            //Définit la requête
+            XPath xPath = XPathFactory.newInstance().newXPath();
+
+            //Exemple de requête pour récupérer une liste
+            //String expression = "//Etudiants/Etudiant";
+
+            //Exemple de requête ciblée
+            String expression = "//Cours[Type='Travaux diriges']";
+
+            //Exécute la requête XPATH
+            //Récupère le résultat de l'éxécution
+            NodeList nodeList = (NodeList) xPath.compile(expression).evaluate(doc, XPathConstants.NODESET);
+
+            //SOP DEBUG ONLY
+            System.out.println(nodeList.getLength());
+
+            //Affichage du résultat
+            if(nodeList.getLength()>0){
+                for (int index =0 ; index < nodeList.getLength(); index++)
+                {
+                    //Noeud
+                    E = (Element) nodeList.item(index);
+
+                    //Données du noeud
+                    L = E.getElementsByTagName("Niveau");
+                    E_1 = (Element) L.item(0);
+                    System.out.println("Niveau :  "+E_1.getTextContent());
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

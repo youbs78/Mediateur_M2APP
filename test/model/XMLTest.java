@@ -12,10 +12,29 @@ public class XMLTest {
 
     @Test
     public void lire_XML() {
-        // TODO: Je ne sais plus comment faire des assert pour faire échouer les tests mdr
         try {
             this.srcXML.lire_XML("src/data/Univ_BD_3.xml");
         } catch (SAXException | IOException | ParserConfigurationException e) {
+            e.printStackTrace();
+        }
+        // System.out.println("XMLTest-lire_XML s'est bien déroulé !");
+    }
+
+    @Test
+    public void connection() {
+        try {
+            this.srcXML.connexion();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        // System.out.println("XMLTest-lire_XML s'est bien déroulé !");
+    }
+
+    @Test
+    public void executeReq() {
+        try {
+            this.srcXML.executeReq("Test");
+        } catch (Exception e) {
             e.printStackTrace();
         }
         // System.out.println("XMLTest-lire_XML s'est bien déroulé !");
