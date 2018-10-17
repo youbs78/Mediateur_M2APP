@@ -56,7 +56,7 @@ public class XML implements ExtracteurItf {
     }
 
     @Override
-    public String reqMedtoReqSrc(String reqMed) {
+    public String reqMedtoReqSrc() {
         return null;
     }
 

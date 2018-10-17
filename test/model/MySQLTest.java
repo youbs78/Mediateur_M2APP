@@ -36,6 +36,11 @@ public class MySQLTest {
     }
 
     @Test
+    public void getInstance() {
+        Assert.assertEquals(MySQL.class, MySQL.getInstance().getClass());
+    }
+
+    @Test
     public void connexion() {
         this.srcMySQL.connexion();
         Assert.assertNotNull(this.srcMySQL.getConn());
@@ -50,11 +55,6 @@ public class MySQLTest {
     }
 
     @Test
-    public void getInstance() {
-        Assert.assertEquals(MySQL.class, MySQL.getInstance().getClass());
-    }
-
-    @Test
     public void setMediateurReq() {
         String reqMed = "Test1";
         this.srcMySQL.setMediateurReq(reqMed);
@@ -63,7 +63,8 @@ public class MySQLTest {
 
     @Test
     public void reqMedtoReqSrc() {
-        Assert.assertEquals(reqSrc_1, this.srcMySQL.reqMedtoReqSrc(reqMed_1));
+        this.srcMySQL.setMediateurReq(reqMed_1);
+        Assert.assertEquals(reqSrc_1, this.srcMySQL.reqMedtoReqSrc());
     }
 
     @Test

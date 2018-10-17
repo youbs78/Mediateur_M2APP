@@ -28,7 +28,6 @@ public interface ExtracteurItf {
      * le schéma conceptuel global
      * La requête doit être mise en minucule !!!
      *
-     * @param reqMed La requête SQL envoyé par le médiateur
      */
     void setMediateurReq(String reqMed);
 
@@ -36,12 +35,12 @@ public interface ExtracteurItf {
     /**
      * Méthode/fonction pour traduire la requête (vue) du médiateur par le schéma de la source
      * en parcourant la table de correspondance générée par le générateur d’adaptateur
-     * et chercher le template qui correspond à la requête du médiateur ;
+     * et chercher le template qui correspond à la requête du médiateur
      *
-     * @param reqMed La requête SQL envoyé par le médiateur
+     * Precondition: Avoir stocké la requête médiateur
      * @return La requête SQL correspondante à celle de la source
      */
-    String reqMedtoReqSrc(String reqMed);
+    String reqMedtoReqSrc();
 
     /**
      * Méthode/fonction pour exécuter (interroger la source) les requêtes du médiateur sur la source

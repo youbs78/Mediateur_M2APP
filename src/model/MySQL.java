@@ -20,42 +20,42 @@ public class MySQL implements ExtracteurItf {
     private ResultSet   rset;   // Représente le résultat de la requête (recordSet)
     private String      medSQL; // Requête SQL envoyé par le mediateur
     // Création de la table de correspondance en static final pour éviter modification
-    private static final HashMap <String, String> tableCorrespondance = new HashMap<>();
+    private static final HashMap <String, String> TABLE_CORRESPONDANCE = new HashMap<>();
     static {
         // region Table Etudiant
-        tableCorrespondance.put("etudiant.id-etudiant", "etudiant.id_etudiant");
-        tableCorrespondance.put("etudiant.nom", "etudiant.nom");
-        tableCorrespondance.put("etudiant.prenom", "etudiant.prenom");
-        tableCorrespondance.put("etudiant.provenance", "etudiant.provenance");
-        tableCorrespondance.put("etudiant.paysformationprecedente", "etudiant.pays_formation_precedente");
-        tableCorrespondance.put("etudiant.anneedebut", "etudiant.annee_debut");
-        tableCorrespondance.put("etudiant.age", "year(curdate())-year(etudiant.datenaissance)");
-        tableCorrespondance.put("etudiant.niveauinsertion", "etudiant.niveau_inscription");
+        TABLE_CORRESPONDANCE.put("etudiant.id-etudiant", "etudiant.id_etudiant");
+        TABLE_CORRESPONDANCE.put("etudiant.nom", "etudiant.nom");
+        TABLE_CORRESPONDANCE.put("etudiant.prenom", "etudiant.prenom");
+        TABLE_CORRESPONDANCE.put("etudiant.provenance", "etudiant.provenance");
+        TABLE_CORRESPONDANCE.put("etudiant.paysformationprecedente", "etudiant.pays_formation_precedente");
+        TABLE_CORRESPONDANCE.put("etudiant.anneedebut", "etudiant.annee_debut");
+        TABLE_CORRESPONDANCE.put("etudiant.age", "year(curdate())-year(etudiant.datenaissance)");
+        TABLE_CORRESPONDANCE.put("etudiant.niveauinsertion", "etudiant.niveau_inscription");
         // endregion
         // region Table Enseignant
-        tableCorrespondance.put("enseignant.id-enseignant", "enseignant.id_ens");
-        tableCorrespondance.put("enseignant.nom", "enseignant.nom");
-        tableCorrespondance.put("enseignant.prenom", "enseignant.prenom");
-        tableCorrespondance.put("enseignant.adressemail", "'Source 2' as adressemail");
+        TABLE_CORRESPONDANCE.put("enseignant.id-enseignant", "enseignant.id_ens");
+        TABLE_CORRESPONDANCE.put("enseignant.nom", "enseignant.nom");
+        TABLE_CORRESPONDANCE.put("enseignant.prenom", "enseignant.prenom");
+        TABLE_CORRESPONDANCE.put("enseignant.adressemail", "'Source 2'");
         // endregion
         // region Table Cours
-        tableCorrespondance.put("cours.id-cours", "cours.numcours");
-        tableCorrespondance.put("cours.libele", "cours.libele");
-        tableCorrespondance.put("cours.type", "cours.type");
-        tableCorrespondance.put("cours.niveau", "cours.niveau");
-        tableCorrespondance.put("cours.heures", "0 as heures");
+        TABLE_CORRESPONDANCE.put("cours.id-cours", "cours.numcours");
+        TABLE_CORRESPONDANCE.put("cours.libele", "cours.libele");
+        TABLE_CORRESPONDANCE.put("cours.type", "cours.type");
+        TABLE_CORRESPONDANCE.put("cours.niveau", "cours.niveau");
+        TABLE_CORRESPONDANCE.put("cours.heures", "0");
         // endregion
         // region Table Inscription
-        tableCorrespondance.put("inscription.id-etudiant", "inscription.numet");
-        tableCorrespondance.put("inscription.id-cours", "inscription.numcours");
-        tableCorrespondance.put("inscription.annee", "inscription.annee");
-        tableCorrespondance.put("inscription.note", "inscription.note_cours");
+        TABLE_CORRESPONDANCE.put("inscription.id-etudiant", "inscription.numet");
+        TABLE_CORRESPONDANCE.put("inscription.id-cours", "inscription.numcours");
+        TABLE_CORRESPONDANCE.put("inscription.annee", "inscription.annee");
+        TABLE_CORRESPONDANCE.put("inscription.note", "inscription.note_cours");
         // endregion
         // region Table Enseigne
-        tableCorrespondance.put("enseigne.id-enseignant", "enseigne.numens");
-        tableCorrespondance.put("enseigne.id-cours", "enseigne.numcours");
-        tableCorrespondance.put("enseigne.annee", "enseigne.annee");
-        tableCorrespondance.put("enseigne.heures", "0 as heures");
+        TABLE_CORRESPONDANCE.put("enseigne.id-enseignant", "enseigne.numens");
+        TABLE_CORRESPONDANCE.put("enseigne.id-cours", "enseigne.numcours");
+        TABLE_CORRESPONDANCE.put("enseigne.annee", "enseigne.annee");
+        TABLE_CORRESPONDANCE.put("enseigne.heures", "0");
         // endregion
     }
 
@@ -94,7 +94,8 @@ public class MySQL implements ExtracteurItf {
         try {
             /*  The newInstance() call is a work around for some
                 broken Java implementations */
-            Class.forName("com.mysql.jdbc.Driver").newInstance();
+            String BD_DRIVER = "com.mysql.jdbc.Driver";
+            Class.forName(BD_DRIVER).newInstance();
         } catch (ClassNotFoundException ex) {
             System.err.println("Erreur de chargement du driver.");
         } catch (IllegalAccessException | InstantiationException e) {
@@ -103,7 +104,10 @@ public class MySQL implements ExtracteurItf {
         }
 
         try {
-            this.conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/id_td1?autoReconnect=true&useSSL=false", "root", "");
+            String BD_URL = "jdbc:mysql://localhost:3306/id_td1?autoReconnect=true&useSSL=false";
+            String BD_USER = "root";
+            String BD_MDP = "";
+            this.conn = DriverManager.getConnection(BD_URL, BD_USER, BD_MDP);
         } catch (SQLException ex) {
             System.err.println("Erreur de connexion à la base de données.");
         }
@@ -129,13 +133,13 @@ public class MySQL implements ExtracteurItf {
     }
 
     @Override
-    public String reqMedtoReqSrc(String reqMed) {
+    public String reqMedtoReqSrc() {
         // Mise en minuscule de la requête médiateur pour
         // aider avec la table de correspondance
-        String reqSrc = reqMed.toLowerCase();
+        String reqSrc = this.medSQL.toLowerCase();
 
         // Parcourt la table de correspondance afin d'effectuer les correspondances
-        for (HashMap.Entry<String, String> entry : tableCorrespondance.entrySet()) {
+        for (HashMap.Entry<String, String> entry : TABLE_CORRESPONDANCE.entrySet()) {
             String key = entry.getKey();
             String value = entry.getValue();
             // Remplace la valeur clé trouvée
@@ -205,7 +209,7 @@ public class MySQL implements ExtracteurItf {
         for (HashMap<String, Object> row : resSrc) {
             // Parcourt la table de correspondance afin d'effectuer les correspondances
             // On va convertir les noms de colonne source en nom de colonne global
-            for (HashMap.Entry<String, String> entry : tableCorrespondance.entrySet()) {
+            for (HashMap.Entry<String, String> entry : TABLE_CORRESPONDANCE.entrySet()) {
                 String key = entry.getKey();
                 String value = entry.getValue();
                 /*  On retire la ligne avec le nom de colonne correspondant à la source
@@ -215,7 +219,7 @@ public class MySQL implements ExtracteurItf {
                     Object obj = row.remove(value);
                     row.put(key, obj);
                 }
-            } //endloop: tableCorrespondance.entrySet()
+            } //endloop: TABLE_CORRESPONDANCE.entrySet()
 
             // Alimente la liste traduite pour le mediateur
             resMed.add(row);

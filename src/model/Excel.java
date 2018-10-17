@@ -67,7 +67,7 @@ public class Excel implements ExtracteurItf {
     }
 
     @Override
-    public String reqMedtoReqSrc(String reqMed) {
+    public String reqMedtoReqSrc() {
         return null;
     }
 
@@ -87,7 +87,7 @@ public class Excel implements ExtracteurItf {
     }
 
     // Affiche les erreurs quand la connexion a echoué
-    public void displaySQLErrors(SQLException e) {
+    private void displaySQLErrors(SQLException e) {
         System.out.println("SQLException: " + e.getMessage());
         System.out.println("SQLStatus: " + e.getSQLState());
         System.out.println("CodeErreur: " + e.getErrorCode());

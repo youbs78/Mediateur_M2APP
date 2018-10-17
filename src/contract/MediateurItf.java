@@ -1,5 +1,6 @@
 package contract;
 
+import java.util.HashMap;
 import java.util.List;
 
 public interface MediateurItf {
@@ -18,15 +19,17 @@ public interface MediateurItf {
     /**
      * Méthode/fonction pour récupérer le résultat des 3 sources
      * Chaque résultat sera récupérés au sein de la classe
+     *
+     * Precondition: Avoir lancé la méthode "sendReq()"
      */
     void getResult();
 
     /**
      * Méthode/fonction pour agréger les résultats des 3 sources.
      *
-     * @return La liste des résultats des 3 sources agrégés
+     * @return la liste des résultats des 3 sources agrégés
      */
-    List<Object> agregate();
+    List<HashMap<String, Object>> agregate();
 
 }
 
