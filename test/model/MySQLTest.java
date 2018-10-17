@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 public class MySQLTest {
     private MySQL srcMySQL = MySQL.getInstance();
@@ -16,6 +17,15 @@ public class MySQLTest {
                                             "FROM Enseignant";
     private static final String reqSrc_1 =  "select enseignant.id_ens, enseignant.nom, enseignant.prenom, 'Source 2' as adressemail " +
                                             "from enseignant";
+    private static final List<String> key_tradReq_1 = new ArrayList<>();
+    static{
+        //region Liste colonne traduite depuis reqSrc_1 attendu
+        key_tradReq_1.add("enseignant.id-enseignant");
+        key_tradReq_1.add("enseignant.nom");
+        key_tradReq_1.add("enseignant.prenom");
+        key_tradReq_1.add("adressemail");
+        //endregione
+    }
 
     @Before
     public void setUp() {
@@ -90,7 +100,14 @@ public class MySQLTest {
         tradRes = this.srcMySQL.tradResToMed(res);
 
         Assert.assertNotEquals(0, tradRes.size());
-        // TODO: Vérifier le résultat de la requête exemple également
+
+        for (HashMap<String, Object> row : tradRes) {
+            //On compare les colonnes attendues avec celles obtenues
+            for(String e : key_tradReq_1){
+                // On voti s'il existe une valeur attribué à la clef
+                Assert.assertNotNull(row.getOrDefault(e,null));
+            }
+        }
 
         this.srcMySQL.deconnexion();
     }

@@ -20,7 +20,7 @@ public class MySQL implements ExtracteurItf {
     private ResultSet   rset;   // Représente le résultat de la requête (recordSet)
     private String      medSQL; // Requête SQL envoyé par le mediateur
     // Création de la table de correspondance en static final pour éviter modification
-    private static final HashMap <String, String> tableCorrespondance = new HashMap<String, String>();
+    private static final HashMap <String, String> tableCorrespondance = new HashMap<>();
     static {
         // region Table Etudiant
         tableCorrespondance.put("etudiant.id-etudiant", "etudiant.id_etudiant");
@@ -163,7 +163,7 @@ public class MySQL implements ExtracteurItf {
 
     @Override
     public List<HashMap<String, Object>> getResFromExecuteReq() {
-        List<HashMap<String, Object>> rows = new ArrayList<HashMap<String, Object>>();
+        List<HashMap<String, Object>> rows = new ArrayList<>();
 
         try{
             ResultSetMetaData metaData = this.rset.getMetaData();
@@ -171,11 +171,18 @@ public class MySQL implements ExtracteurItf {
 
             // Crée une liste de hashmap afin d'associer chaque colonne à sa valeur
             while (this.rset.next()) {
-                HashMap<String, Object> columns = new LinkedHashMap<String, Object>();
+                HashMap<String, Object> columns = new HashMap<>();
 
                 for (int i = 1; i <= columnCount; i++) {
+                    // On veut avoir le nom de table pour la correspondance
+                    StringBuilder nouvelleCle = new StringBuilder();
+                    if(!metaData.getTableName(i).isEmpty()){
+                        nouvelleCle.append(metaData.getTableName(i))
+                                   .append(".");
+                    }
+                    nouvelleCle.append(metaData.getColumnLabel(i));
                     // le nom de la colonne sera mis en miniscule pour la table de correspondance
-                    columns.put(metaData.getColumnLabel(i).toLowerCase(), this.rset.getObject(i));
+                    columns.put(nouvelleCle.toString().toLowerCase(), this.rset.getObject(i));
                 }
 
                 rows.add(columns);
@@ -192,24 +199,22 @@ public class MySQL implements ExtracteurItf {
 
     @Override
     public List<HashMap<String, Object>> tradResToMed(List<HashMap<String, Object>> resSrc) {
-        List<HashMap<String, Object>> resMed = new ArrayList<HashMap<String, Object>>();
+        List<HashMap<String, Object>> resMed = new ArrayList<>();
 
         // Loop sur la List<HashMap<>>
         for (HashMap<String, Object> row : resSrc) {
             // Parcourt la table de correspondance afin d'effectuer les correspondances
             // On va convertir les noms de colonne source en nom de colonne global
             for (HashMap.Entry<String, String> entry : tableCorrespondance.entrySet()) {
-                // On va ignorer les préfixes de table
-
-                // TODO: A FAIRE
-                String key = entry.getKey().split("\\.")[1];
-                String value = entry.getValue().split("\\.")[1];
-                /*
-                    On retire la ligne avec le nom de colonne correspondant à la source
+                String key = entry.getKey();
+                String value = entry.getValue();
+                /*  On retire la ligne avec le nom de colonne correspondant à la source
                     puis on le remet avec le nom de colonne correspondant au mediateur
-                 */
-                Object obj = row.remove(value);
-                row.put(key, obj);
+                    On vérifie que l'entrée correspond avant de la retirer */
+                if(row.get(value)!=null){
+                    Object obj = row.remove(value);
+                    row.put(key, obj);
+                }
             } //endloop: tableCorrespondance.entrySet()
 
             // Alimente la liste traduite pour le mediateur
