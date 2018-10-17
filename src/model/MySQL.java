@@ -28,6 +28,9 @@ public class MySQL implements ExtracteurItf {
         TABLE_CORRESPONDANCE.put("etudiant.prenom", "etudiant.prenom");
         TABLE_CORRESPONDANCE.put("etudiant.provenance", "etudiant.provenance");
         TABLE_CORRESPONDANCE.put("etudiant.paysformationprecedente", "etudiant.pays_formation_precedente");
+        TABLE_CORRESPONDANCE.put("'france'", "'fr'");
+        TABLE_CORRESPONDANCE.put("'allemagne'", "'de'");
+        TABLE_CORRESPONDANCE.put("'italie'", "'it'");
         TABLE_CORRESPONDANCE.put("etudiant.anneedebut", "etudiant.annee_debut");
         TABLE_CORRESPONDANCE.put("etudiant.age", "year(curdate())-year(etudiant.datenaissance)");
         TABLE_CORRESPONDANCE.put("etudiant.niveauinsertion", "etudiant.niveau_inscription");

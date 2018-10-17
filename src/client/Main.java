@@ -21,12 +21,23 @@ public class Main {
         //2. Retourner le nombre d’étudiants dont le pays de Provenance est la ‘France’.
         reqSQL.add( " SELECT COUNT(Etudiant.ID-Etudiant) as nb_etudiant_francais " +
                     " FROM   Etudiant " +
-                    " WHERE  Etudiant.PaysFormationPrecedente = 'France'; ");
-        /*
+                    " WHERE  Etudiant.Provenance = 'France'; ");
+
         //3. Afficher le nombre de cours par Type (CM, TD ou TP).
-        reqSQL.add( "SELECT... " +
-                    "FROM... ");
-        */
+        reqSQL.add( " SELECT Cours.Type as type, COUNT(Cours.Id-Cours) as nb_cours_par_type " +
+                    " FROM Cours " +
+                    " GROUP BY Cours.Type; ");
+        //4. Afficher les étudiants de plus de 32 ans qui suivent le cours de M. Dubois Jean
+        reqSQL.add( " SELECT Etudiant.ID-Etudiant as id, Etudiant.Nom as nom, Etudiant.prenom as prenom," +
+                    "   Etudiant.Age as age" +
+                    " FROM Etudiant, Inscription, Cours, Enseigne, Enseignant" +
+                    " WHERE Etudiant.ID-Etudiant = Inscription.ID-Etudiant" +
+                    "   AND Inscription.ID-Cours = Cours.ID-Cours" +
+                    "   AND Cours.ID-Cours = Enseigne.ID-Cours" +
+                    "   AND Enseigne.ID-Enseignant = Enseignant.ID-Enseignant " +
+                    "   AND Etudiant.Age > 32 " +
+                    "   AND LOWER(Enseignant.Nom) = 'dubois' " +
+                    "   AND LOWER(Enseignant.Prenom) = 'jean' ; ");
     }
 
     // Instancier un médiateur M ;
@@ -39,6 +50,7 @@ public class Main {
 
         // Parcout des requêtes définit en static
         for(String element : reqSQL){
+            System.out.println("\n" + element);
             med.sendReq(element);
             med.getResult();
             resultatReq = med.agregate();
