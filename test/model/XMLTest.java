@@ -14,7 +14,7 @@ public class XMLTest {
     public void lire_XML() {
         // TODO: Je ne sais plus comment faire des assert pour faire échouer les tests mdr
         try {
-            this.srcXML.lire_XML("src/data/Univ_BD_3.xml");
+            this.srcXML.lire_XML("data/Univ_BD_3.xml");
         } catch (SAXException | IOException | ParserConfigurationException e) {
             e.printStackTrace();
         }
