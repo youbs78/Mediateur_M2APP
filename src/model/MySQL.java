@@ -27,6 +27,7 @@ public class MySQL implements ExtracteurItf {
         TABLE_CORRESPONDANCE.put("etudiant.nom", "etudiant.nom");
         TABLE_CORRESPONDANCE.put("etudiant.prenom", "etudiant.prenom");
         TABLE_CORRESPONDANCE.put("etudiant.provenance", "etudiant.provenance");
+        TABLE_CORRESPONDANCE.put("etudiant.formationprecedente", "etudiant.formationprecedente");
         TABLE_CORRESPONDANCE.put("etudiant.paysformationprecedente", "etudiant.pays_formation_precedente");
         TABLE_CORRESPONDANCE.put("'france'", "'fr'");
         TABLE_CORRESPONDANCE.put("'allemagne'", "'de'");

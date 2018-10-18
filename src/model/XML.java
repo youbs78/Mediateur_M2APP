@@ -23,17 +23,70 @@ import java.util.List;
  * @version 0.1
  */
 public class XML implements ExtracteurItf {
-    // Singleton pour bonne pratique
-    private static XML INSTANCE = new XML();
+    private static XML INSTANCE = new XML(); //Singleton pour bonne pratique
+    private String medSQL; //Requête SQL envoyé par le médiateur
+    private static final HashMap <String, String> TABLE_CORRESPONDANCE = new HashMap<>(); //Table de correspondance en static final pour éviter toutes modifications
+    static {
+        // region Table Etudiant
+        TABLE_CORRESPONDANCE.put("etudiant.id-etudiant","etudiants.etudiant.numet");
+        TABLE_CORRESPONDANCE.put("etudiant.nom","etudiants.etudiant.nom");
+        TABLE_CORRESPONDANCE.put("etudiant.prenom","'Source 3'");
+        TABLE_CORRESPONDANCE.put("etudiant.nom","etudiants.etudiant.provenance");
+        TABLE_CORRESPONDANCE.put("etudiant.provenance","etudiants.etudiant.provenance");
+        TABLE_CORRESPONDANCE.put("etudiant.formationprecedente","etudiants.etudiant.formationprecedante");
+        TABLE_CORRESPONDANCE.put("etudiant.paysformationprecedente","etudiants.etudiant.pays_formation_precedante");
+        TABLE_CORRESPONDANCE.put("etudiant.anneedebut","etudiants.etudiant.anneedebut");
+        TABLE_CORRESPONDANCE.put("etudiant.age","etudiants.etudiant.dateNaissance");
+        TABLE_CORRESPONDANCE.put("etudiant.niveauinsertion","etudiants.etudiant.niveau_insertion");
+        //endregion
+        // region Table Enseignant
+        TABLE_CORRESPONDANCE.put("enseignant.id-enseignant", "enseignants.enseignant.numens");
+        TABLE_CORRESPONDANCE.put("enseignant.nom", "enseignants.enseignant.nom");
+        TABLE_CORRESPONDANCE.put("enseignant.prenom", "enseignants.enseignant.prenom");
+        TABLE_CORRESPONDANCE.put("enseignant.adressemail", "enseignants.enseignant.adressemail");
+        //endregion
+        // region Table Cours
+        TABLE_CORRESPONDANCE.put("cours.id-cours", "cours.cours.id_cours");
+        TABLE_CORRESPONDANCE.put("cours.libele", "'Source 3'");
+        TABLE_CORRESPONDANCE.put("cours.type", "cours.cours.type");
+        TABLE_CORRESPONDANCE.put("cours.niveau", "cours.cours.niveau");
+        TABLE_CORRESPONDANCE.put("cours.heures", "cours.cours.nb_heures");
+        // endregion
+        // region Table Inscription
+        TABLE_CORRESPONDANCE.put("inscription.id-etudiant", "etudiants.etudiants.inscriptions.inscription.numet");
+        TABLE_CORRESPONDANCE.put("inscription.id-cours", "etudiants.etudiants.inscriptions.inscription.id_cours");
+        TABLE_CORRESPONDANCE.put("inscription.annee", "etudiants.etudiants.inscriptions.inscription.annee_universitaire");
+        TABLE_CORRESPONDANCE.put("inscription.note", "etudiants.etudiants.inscriptions.inscription.note_cours");
+        // endregion
+        // region Table Enseigne
+        TABLE_CORRESPONDANCE.put("enseigne.id-enseignant", "enseignants.enseignant.enseignements.enseigne.numens");
+        TABLE_CORRESPONDANCE.put("enseigne.id-cours", "enseignants.enseignant.enseignements.enseigne.id_cours");
+        TABLE_CORRESPONDANCE.put("enseigne.annee", "enseignants.enseignant.enseignements.enseigne.annee_universitaire");
+        TABLE_CORRESPONDANCE.put("enseigne.heures", "enseignants.enseignant.enseignements.enseigne.nb_heures");
+        // endregion
 
+
+    }
+
+    //Constructeur par défaut
     private XML() {
     }
 
+    //Accesseurs
     public static XML getInstance() {
         if (INSTANCE == null) {
             INSTANCE = new XML();
         }
         return INSTANCE;
+    }
+
+    public String getMedSQL() {
+        return medSQL;
+    }
+
+    @Override
+    public void setMediateurReq(String reqMed) {
+        this.medSQL = reqMed.toLowerCase(); //Convertit la chaîne reqMed en minuscules pour permettre la mise en correspondance avec la table de correspondance de la source XML plus tard
     }
 
     @Override
@@ -46,19 +99,29 @@ public class XML implements ExtracteurItf {
     }
 
     @Override
-    public void deconnexion() {
-
-    }
-
-    @Override
-    public void setMediateurReq(String reqMed) {
-
-    }
+    public void deconnexion() { }
 
     @Override
     public String reqMedtoReqSrc() {
-        return null;
+        if(!this.getMedSQL().isEmpty()) {
+            String reqSrc = this.medSQL;
+
+            // Parcourt la table de correspondance afin d'effectuer les correspondances
+            for (HashMap.Entry<String, String> entry : TABLE_CORRESPONDANCE.entrySet()) {
+                //Récupère clé, valeur (correspondance source)
+                String key = entry.getKey();
+                String value = entry.getValue();
+
+                //Remplace la valeur clé trouvée par sa valeur correspondante à la source
+                reqSrc = reqSrc.replace(key, value);
+            }
+            return reqSrc;
+        }else {
+            System.out.println("La requête du médiateur n'est pas définie ! \n. La fonction reqMedtoReqSrc retourne null.");
+            return null;
+        }
     }
+
 
     @Override
     public void executeReq(String reqSrc) {
@@ -66,6 +129,30 @@ public class XML implements ExtracteurItf {
         //XPath est un langage de requête pour localiser une portion d'un document XML
         NodeList L ;
         Element E, E_1;
+        String node, element, path="";
+        String[] req, nodes;
+
+        /* Découpe la requête source pour la définition de l'expression xPath (identifier le noeud dans lequel on va chercher (node)
+         * et l'élement qu'on souhaite afficher (element).*/
+        req = reqSrc.split("from"); //Séparation des informations du select et des informations du from
+        node = req[0].split("select")[1]; //Séparation de l'instruction de sélection et de l'information pour ne disposer que de la dernière
+
+        //Définit l'expression xPath et l'élement
+        node = node.replace('.', '/'); //Définition d'un nouveau délimiteur
+        nodes = node.split("/"); //Découpage des sous-noeuds pour construire le chemin du noeud l'expression xPath. Ce dernier ne prend pas en compte l'élement recherché.
+        element= nodes[nodes.length-1]; //Définit l'élément recherché
+
+        for(int i=0;i<nodes.length-1;i++){ //Construction du chemin du noeud
+            path+="/"+nodes[i];
+        }
+
+        //Formatage des informations
+        element = element.trim();
+        path = (("/"+path).replaceAll("\\s+","")).trim(); //Enlève les espaces
+
+        System.out.println("Requête source : "+ reqSrc);
+        System.out.println("Expression xPath : "+path);
+        System.out.println("Elément recherché : "+element+"\n");
 
         try {
             //Connexion à la source
@@ -79,14 +166,15 @@ public class XML implements ExtracteurItf {
             //String expression = "//Etudiants/Etudiant";
 
             //Exemple de requête ciblée
-            String expression = "//Cours[Type='Travaux diriges']";
+
+            String expression = path;
 
             //Exécute la requête XPATH
             //Récupère le résultat de l'éxécution
             NodeList nodeList = (NodeList) xPath.compile(expression).evaluate(doc, XPathConstants.NODESET);
 
             //SOP DEBUG ONLY
-            System.out.println(nodeList.getLength());
+            System.out.println("Résultat de la requête : ");
 
             //Affichage du résultat
             if(nodeList.getLength()>0){
@@ -96,9 +184,9 @@ public class XML implements ExtracteurItf {
                     E = (Element) nodeList.item(index);
 
                     //Données du noeud
-                    L = E.getElementsByTagName("Niveau");
+                    L = E.getElementsByTagName(element);
                     E_1 = (Element) L.item(0);
-                    System.out.println("Niveau :  "+E_1.getTextContent());
+                    System.out.println(E_1.getTextContent());
                 }
             }
         } catch (Exception e) {
