@@ -20,7 +20,7 @@ public class Excel implements ExtracteurItf {
     // Singleton pour bonne pratique
     private static Excel INSTANCE = new Excel();
     private Connection conn;    // Objet connexion une fois celle-ci établie
-    private Statement statement;    // Objet statement une fois la connexion etablie
+    private Statement statement;    // Objet statement une fois la connexion etablie.
 
     private Excel() {
     }
