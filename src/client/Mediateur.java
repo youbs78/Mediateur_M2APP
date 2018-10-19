@@ -51,18 +51,18 @@ public class Mediateur implements MediateurItf {
 
     @Override
     public void sendReq(String reqMed) {
-        //this.extracteurSrc1.setMediateurReq(reqMed);
-        this.extracteurSrc2.setMediateurReq(reqMed);
+        this.extracteurSrc1.setMediateurReq(reqMed);
+        //this.extracteurSrc2.setMediateurReq(reqMed);
         //this.extracteurSrc3.setMediateurReq(reqMed);
     }
 
     @Override
     public void getResult() {
-        // La requÃªte traduite en 'langage source'
+        // La requéte traduite en 'langage source'
         String srcReq;
-        // La liste de rÃ©sultat issue directement depuis la source
+        // La liste de résultat issue directement depuis la source
         List<HashMap<String, Object>> tmp;
-/*
+
         //region Source 1
         this.extracteurSrc1.connexion();
         srcReq = this.extracteurSrc1.reqMedtoReqSrc();
@@ -71,7 +71,7 @@ public class Mediateur implements MediateurItf {
         this.resSrc1 = this.extracteurSrc1.tradResToMed(tmp);
         this.extracteurSrc1.deconnexion();
         //endregion
-*/
+/*
         //region Source 2
         this.extracteurSrc2.connexion();
         srcReq = this.extracteurSrc2.reqMedtoReqSrc();
@@ -80,6 +80,7 @@ public class Mediateur implements MediateurItf {
         this.resSrc2 = this.extracteurSrc2.tradResToMed(tmp);
         this.extracteurSrc2.deconnexion();
         //endregion
+*/
 /*
         //region Source 3
         this.extracteurSrc3.connexion();
