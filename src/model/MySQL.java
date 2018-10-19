@@ -141,6 +141,10 @@ public class MySQL implements ExtracteurItf {
         // Mise en minuscule de la requête médiateur pour
         // aider avec la table de correspondance
         String reqSrc = this.medSQL.toLowerCase();
+        if(reqSrc.isEmpty()){
+            System.out.println("Erreur: Pas de requête médiateur chargée !");
+            return null;
+        }
 
         // Parcourt la table de correspondance afin d'effectuer les correspondances
         for (HashMap.Entry<String, String> entry : TABLE_CORRESPONDANCE.entrySet()) {
