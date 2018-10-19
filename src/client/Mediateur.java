@@ -51,15 +51,15 @@ public class Mediateur implements MediateurItf {
 
     @Override
     public void sendReq(String reqMed) {
-<<<<<<< HEAD
+
         this.extracteurSrc1.setMediateurReq(reqMed);
         //this.extracteurSrc2.setMediateurReq(reqMed);
         //this.extracteurSrc3.setMediateurReq(reqMed);
-=======
+
         //this.extracteurSrc1.setMediateurReq(reqMed);
         this.extracteurSrc2.setMediateurReq(reqMed);
         this.extracteurSrc3.setMediateurReq(reqMed);
->>>>>>> branch 'master' of https://github.com/youbs78/Mediateur_M2APP.git
+
     }
 
     @Override

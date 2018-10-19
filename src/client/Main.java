@@ -27,14 +27,14 @@ public class Main {
         reqSQL.add( " SELECT Cours.Type as type, COUNT(Cours.Id-Cours) as nb_cours_par_type " +
                     " FROM Cours " +
                     " GROUP BY Cours.Type; ");
-<<<<<<< HEAD
+
         //4. Afficher les étudiants de plus de 32 ans qui suivent le cours de M. Dubois Jean
 /*        reqSQL.add( " SELECT Etudiant.ID-Etudiant as id, Etudiant.Nom as nom, Etudiant.prenom as prenom," +
-=======
+
 
         //4. Afficher les Ã©tudiants de plus de 32 ans qui suivent le cours de M. Dubois Jean
         reqSQL.add( " SELECT Etudiant.ID-Etudiant as id, Etudiant.Nom as nom, Etudiant.prenom as prenom," +
->>>>>>> branch 'master' of https://github.com/youbs78/Mediateur_M2APP.git
+
                     "   Etudiant.Age as age" +
                     " FROM Etudiant, Inscription, Cours, Enseigne, Enseignant" +
                     " WHERE Etudiant.ID-Etudiant = Inscription.ID-Etudiant" +

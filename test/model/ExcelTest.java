@@ -1,14 +1,13 @@
 package model;
 
 
-<<<<<<< HEAD
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-=======
->>>>>>> branch 'master' of https://github.com/youbs78/Mediateur_M2APP.git
+
 import org.junit.Assert;
 import org.junit.Test;
 
