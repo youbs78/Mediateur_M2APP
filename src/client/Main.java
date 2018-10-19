@@ -11,7 +11,7 @@ public class Main {
      */
     private static final List<String> reqSQL = new ArrayList<>();
     static{
-        //1. Afficher pour chaque enseignant, son nombre total d'heures assurées.
+        //1. Afficher pour chaque enseignant, son nombre total d'heures assurées
         reqSQL.add( " SELECT Enseignant.ID-Enseignant as id, Enseignant.Nom as nom, Enseignant.Prenom as prenom, SUM(Cours.Heures) as heures " +
                     " FROM   Enseignant, Enseigne, Cours " +
                     " WHERE  Enseignant.ID-Enseignant = Enseigne.ID-Enseignant " +

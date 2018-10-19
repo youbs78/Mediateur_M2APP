@@ -206,7 +206,6 @@ public class Excel implements ExtracteurItf {
         try{
             ResultSetMetaData metaData = this.rset.getMetaData();
             int columnCount = metaData.getColumnCount();
-
             // Crée une liste de hashmap afin d'associer chaque colonne à  sa valeur
             while (this.rset.next()) {
                 HashMap<String, Object> columns = new HashMap<>();

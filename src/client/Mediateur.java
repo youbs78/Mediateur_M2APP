@@ -71,6 +71,7 @@ public class Mediateur implements MediateurItf {
         this.resSrc1 = this.extracteurSrc1.tradResToMed(tmp);
         this.extracteurSrc1.deconnexion();
         //endregion
+        
 /*
         //region Source 2
         this.extracteurSrc2.connexion();

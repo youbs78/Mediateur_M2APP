@@ -30,7 +30,6 @@ class ExcelTest {
 	static{
 	//region Liste colonne traduite depuis reqSrc_2 attendu
 	key_tradReq_1.add("etudiant.id-etudiant");
-
 	//endregione
 	}
 
