@@ -5,16 +5,16 @@ import contract.ExtracteurItf;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * Classe Extracteur/Adaptateur pour la source de donnees Excel
  *
- * @author ayoub
- * @version 0.1
+ * @author Ayoub
+ * @version 1.0
  */
 public class Excel implements ExtracteurItf {
     // Singleton pour bonne pratique
@@ -34,32 +34,70 @@ public class Excel implements ExtracteurItf {
 
     @Override
     public void connexion() {
-        try {
-            Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
-            //Class.forName("com.hxtt.sql.excel.ExcelDriver");
-
-        } catch (ClassNotFoundException ex) {
-            System.err.println("Erreur de chargement du driver.");
-        }
-        try {
-            this.conn = DriverManager.getConnection("jdbc:odbc:data.Source1", "", "");
-            statement = conn.createStatement();
-            System.out.println("Connexion etablie");
-
-        } catch (SQLException ex) {
-            System.err.println("Excel Erreur de connexion Ã  la base de donnÃ©es.");
-        }
+    	try
+		{
+			Class.forName("com.hxtt.sql.excel.ExcelDriver").newInstance();
+		}
+		catch (Exception ex)
+		{
+			System.err.println("Erreur de chargement du driver.");
+		}
+		try
+		{
+			String url = "jdbc:Excel:/D:/Source1.xls";
+			
+			this.conn = DriverManager.getConnection(url,"","");
+			statement = conn.createStatement();
+			statement.setFetchSize(10);
+			System.out.println("Connexion etablie");
+			
+		}
+		catch (SQLException ex)
+		{
+			System.err.println("Excel Erreur de connexion à la base de données.");
+		}
+		
     }
 
     @Override
     public void deconnexion() {
-        try {
-            this.conn.close();
-            System.out.println("Connexion terminÃ©e");
-        } catch (SQLException ex) {
-            System.err.println("Excel Erreur de deconnexion Ã  la base de donnÃ©es");
-        }
+		try
+		{
+			this.statement.close();
+			this.conn.close();
+			System.out.println("Connexion terminée");
+		
+		}
+		catch (SQLException ex)
+		{
+			System.err.println("Excel Erreur de deconnexion à la base de données");
+		    
+		}
     }
+    
+	// Affiche les erreurs quand la connexion a echoué
+	public void displaySQLErrors(SQLException e)
+ {
+		System.out.println("SQLException: " + e.getMessage());
+		System.out.println("SQLStatus: " + e.getSQLState());
+		System.out.println("CodeErreur: " + e.getErrorCode());
+ }
+
+	
+//Execution d'une requête
+public ResultSet requeteSQL(String requete)
+{
+	ResultSet resultat = null;
+	try
+	{
+		resultat = statement.executeQuery(requete);
+	}
+	catch(SQLException e)
+	{
+		displaySQLErrors(e);
+	}
+	return resultat;
+}
 
     @Override
     public void setMediateurReq(String reqMed) {
@@ -81,27 +119,14 @@ public class Excel implements ExtracteurItf {
         return null;
     }
 
-    @Override
-    public List<HashMap<String, Object>> tradResToMed(List<HashMap<String, Object>> resSrc) {
-        return null;
-    }
+	@Override
+	public List<HashMap<String, Object>> tradResToMed(List<HashMap<String, Object>> resSrc) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-    // Affiche les erreurs quand la connexion a echouÃ©
-    private void displaySQLErrors(SQLException e) {
-        System.out.println("SQLException: " + e.getMessage());
-        System.out.println("SQLStatus: " + e.getSQLState());
-        System.out.println("CodeErreur: " + e.getErrorCode());
-    }
+ 
 
 
-    //Execution d'une requÃªte
-    public ResultSet requeteSQL(String requete) {
-        ResultSet resultat = null;
-        try {
-            resultat = statement.executeQuery(requete);
-        } catch (SQLException e) {
-            displaySQLErrors(e);
-        }
-        return resultat;
-    }
+
 }
