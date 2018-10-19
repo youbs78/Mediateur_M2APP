@@ -53,7 +53,7 @@ public class Mediateur implements MediateurItf {
     public void sendReq(String reqMed) {
         //this.extracteurSrc1.setMediateurReq(reqMed);
         this.extracteurSrc2.setMediateurReq(reqMed);
-        //this.extracteurSrc3.setMediateurReq(reqMed);
+        this.extracteurSrc3.setMediateurReq(reqMed);
     }
 
     @Override
@@ -80,16 +80,17 @@ public class Mediateur implements MediateurItf {
         this.resSrc2 = this.extracteurSrc2.tradResToMed(tmp);
         this.extracteurSrc2.deconnexion();
         //endregion
-/*
+
+        /*
         //region Source 3
-        this.extracteurSrc3.connexion();
+        //this.extracteurSrc3.connexion();
         srcReq = this.extracteurSrc3.reqMedtoReqSrc();
         this.extracteurSrc3.executeReq(srcReq);
-        tmp = this.extracteurSrc3.getResFromExecuteReq();
-        this.resSrc3 = this.extracteurSrc3.tradResToMed(tmp);
-        this.extracteurSrc3.deconnexion();
+        //tmp = this.extracteurSrc3.getResFromExecuteReq();
+        //this.resSrc3 = this.extracteurSrc3.tradResToMed(tmp);
+        //this.extracteurSrc3.deconnexion();
         //endregion
-*/
+        */
     }
 
     @Override

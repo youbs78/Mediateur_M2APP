@@ -27,6 +27,7 @@ public class Main {
         reqSQL.add( " SELECT Cours.Type as type, COUNT(Cours.Id-Cours) as nb_cours_par_type " +
                     " FROM Cours " +
                     " GROUP BY Cours.Type; ");
+
         //4. Afficher les étudiants de plus de 32 ans qui suivent le cours de M. Dubois Jean
         reqSQL.add( " SELECT Etudiant.ID-Etudiant as id, Etudiant.Nom as nom, Etudiant.prenom as prenom," +
                     "   Etudiant.Age as age" +

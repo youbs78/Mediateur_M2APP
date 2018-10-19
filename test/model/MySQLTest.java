@@ -13,18 +13,18 @@ import java.util.Map.Entry;
 
 public class MySQLTest {
     private MySQL srcMySQL = MySQL.getInstance();
-    private static final String reqMed_1 =  "SELECT Enseignant.ID-Enseignant, Enseignant.Nom, Enseignant.Prenom, Enseignant.adresseMail " +
-                                            "FROM Enseignant";
-    private static final String reqSrc_1 =  "select enseignant.id_ens, enseignant.nom, enseignant.prenom, 'Source 2' as adressemail " +
-                                            "from enseignant";
+    private static final String reqMed_1 =  " SELECT Enseignant.ID-Enseignant as id, Enseignant.Nom as nom, Enseignant.Prenom as prenom, Enseignant.adresseMail as adresseMail " +
+                                            " FROM Enseignant ; ";
+    private static final String reqSrc_1 =  " select enseignant.id_ens as id, enseignant.nom as nom, enseignant.prenom as prenom, 'Source 2' as adressemail " +
+                                            " from enseignant ; ";
     private static final List<String> key_tradReq_1 = new ArrayList<>();
     static{
         //region Liste colonne traduite depuis reqSrc_1 attendu
-        key_tradReq_1.add("enseignant.id-enseignant");
+        key_tradReq_1.add("enseignant.id");
         key_tradReq_1.add("enseignant.nom");
         key_tradReq_1.add("enseignant.prenom");
         key_tradReq_1.add("adressemail");
-        //endregione
+        //endregion
     }
 
     @Before
@@ -44,6 +44,7 @@ public class MySQLTest {
     public void connexion() {
         this.srcMySQL.connexion();
         Assert.assertNotNull(this.srcMySQL.getConn());
+        this.srcMySQL.deconnexion();
     }
 
     @Test
@@ -68,15 +69,17 @@ public class MySQLTest {
     }
 
     @Test
-    public void executeReq() throws SQLException {
-        this.srcMySQL.connexion();
-
-        this.srcMySQL.executeReq(reqSrc_1);
-        Assert.assertNotNull(this.srcMySQL.getStmt());
-        // Vérifie s'il existe au moins un résultat
-        Assert.assertTrue(this.srcMySQL.getRset().next());
-
-        this.srcMySQL.deconnexion();
+    public void executeReq() {
+        try {
+            this.srcMySQL.connexion();
+            this.srcMySQL.executeReq(reqSrc_1);
+            Assert.assertNotNull(this.srcMySQL.getStmt());
+            // Vérifie s'il existe au moins un résultat
+            Assert.assertTrue(this.srcMySQL.getRset().next());
+            this.srcMySQL.deconnexion();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
