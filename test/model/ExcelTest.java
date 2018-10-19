@@ -10,7 +10,9 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import domain.Cours;
+import model.Excel;
+
+
 
 class ExcelTest {
 
@@ -27,17 +29,17 @@ class ExcelTest {
 	@Test
 	void connexon() {
 		 this.srcExcel.connexion();
-	     Assert.assertNotNull(this.srcMySQL.getConn());
+	     Assert.assertNotNull(this.srcExcel.getConn());
          System.out.println("ExcelTest-Connexion s'est bien deroule !");
+         
 	}
 	
 	@Test
 	public void deconnexion() {
-		
 	 // Connexion obligatoire avant
 	 this.srcExcel.connexion();
 	 this.srcExcel.deconnexion();
-	 Assert.assertNull( this.srcExcel.getConn());
+	 Assert.assertNull(this.srcExcel.getConn());
 	 System.out.println("ExcelTest-Deconnexion s'est bien déroulé !");
 	 
 	}

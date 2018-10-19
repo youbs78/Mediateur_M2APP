@@ -22,7 +22,7 @@ public class Excel implements ExtracteurItf {
     private Connection conn;    // Objet connexion une fois celle-ci établie
     private Statement statement;    // Objet statement une fois la connexion etablie.
 
-    private Excel() {
+    public Excel() {
     }
 
     public static Excel getInstance() {
@@ -31,6 +31,15 @@ public class Excel implements ExtracteurItf {
         }
         return INSTANCE;
     }
+    
+    public Connection getConn() {
+        return conn;
+    }
+    public Statement getStmt() {
+        return statement;
+    }
+
+ 
 
     @Override
     public void connexion() {
