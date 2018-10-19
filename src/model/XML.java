@@ -1,7 +1,6 @@
 package model;
 
 import contract.ExtracteurItf;
-import javafx.scene.control.Tab;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -11,6 +10,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -26,6 +26,7 @@ import java.util.List;
 public class XML implements ExtracteurItf {
     private static XML INSTANCE = null; //Singleton pour bonne pratique
     private Document docXML;
+    private NodeList nodeList;
     private String medSQL; //Requête SQL envoyé par le médiateur
     private static final HashMap <String, String> TABLE_CORRESPONDANCE = new HashMap<>(); //Table de correspondance en static final pour éviter toutes modifications
     static {
@@ -61,6 +62,10 @@ public class XML implements ExtracteurItf {
 
     public Document getDocXML() {
         return docXML;
+    }
+
+    public NodeList getNodeList() {
+        return nodeList;
     }
 
     public String getMedSQL() {
@@ -119,78 +124,18 @@ public class XML implements ExtracteurItf {
     public void executeReq(String reqSrc) {
         //XPath est utilisé pour le requêtage des données
         //XPath est un langage de requête pour localiser une portion d'un document XML
-        NodeList L ;
-        Element E, E_1;
-        String node, element, path="";
-        String[] req, nodes;
-
-
-        /* Découpe la requête source pour la définition de l'expression xPath (identifier le noeud dans lequel on va chercher (node)
-         * et l'élement qu'on souhaite afficher (element).*/
-
-        req = reqSrc.split("from"); //Séparation des informations du select et des informations du from
-        node = req[0].split("select")[1]; //Séparation de l'instruction de sélection et de l'information pour ne disposer que de la dernière
-
-        //Définit l'expression xPath et l'élement
-        node = node.replace('.', '/'); //Définition d'un nouveau délimiteur
-
-        //TODO: split avec "."
-        //node = node.split("\\.");
-
-        nodes = node.split("/"); //Découpage des sous-noeuds pour construire le chemin du noeud l'expression xPath. Ce dernier ne prend pas en compte l'élement recherché.
-        element= nodes[nodes.length-1]; //Définit l'élément recherché
-
-        for(int i=0;i<nodes.length-1;i++){ //Construction du chemin du noeud
-            path+="/"+nodes[i];
-        }
-
-
-        //Formatage des informations
-        element = element.trim();
-        path = (("/"+path).replaceAll("\\s+","")).trim(); //Enlève les espaces
-
-        System.out.println("Requête source : "+ reqSrc);
-        System.out.println("Expression xPath : "+path);
-        System.out.println("Elément recherché : "+element+"\n");
-
-
-
         try {
-            //Connexion à la source
-            DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-            Document doc = builderFactory.newDocumentBuilder().parse(new FileInputStream("data/Univ_BD_3.xml"));
-
             //Définit la requête
             XPath xPath = XPathFactory.newInstance().newXPath();
 
             //Exemple de requête pour récupérer une liste
             //String expression = "//Etudiants/Etudiant";
 
-            //Exemple de requête ciblée
-
-            String expression = reqSrc;
-
             //Exécute la requête XPATH
             //Récupère le résultat de l'éxécution
-            NodeList nodeList = (NodeList) xPath.compile(expression).evaluate(doc, XPathConstants.NODESET);
+            this.nodeList = (NodeList) xPath.compile(reqSrc).evaluate(docXML, XPathConstants.NODESET);
 
-            //SOP DEBUG ONLY
-            System.out.println("Résultat de la requête : ");
-
-            //Affichage du résultat
-            if(nodeList.getLength()>0){
-                for (int index =0 ; index < nodeList.getLength(); index++)
-                {
-                    //Noeud
-                    E = (Element) nodeList.item(index);
-
-                    //Données du noeud
-                    L = E.getElementsByTagName(element);
-                    E_1 = (Element) L.item(0);
-                    System.out.println(E_1.getTextContent());
-                }
-            }
-        } catch (Exception e) {
+        } catch (XPathExpressionException e) {
             e.printStackTrace();
         }
     }

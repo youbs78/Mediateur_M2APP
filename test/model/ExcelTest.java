@@ -1,30 +1,17 @@
 package model;
 
 
-import java.sql.*;
-import java.sql.ResultSet;
-import java.util.List;
-
 import org.junit.Assert;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
-import model.Excel;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 
 
 
 class ExcelTest {
 
 	private Excel srcExcel = new Excel();
-
-	@BeforeEach
-	void setUp() throws Exception {
-	}
-
-	@AfterEach
-	void tearDown() throws Exception {
-	}
 
 	@Test
 	void connexon() {
@@ -40,7 +27,7 @@ class ExcelTest {
 	 this.srcExcel.connexion();
 	 this.srcExcel.deconnexion();
 	 Assert.assertNull(this.srcExcel.getConn());
-	 System.out.println("ExcelTest-Deconnexion s'est bien déroulé !");
+	 System.out.println("ExcelTest-Deconnexion s'est bien dï¿½roulï¿½ !");
 	 
 	}
 	

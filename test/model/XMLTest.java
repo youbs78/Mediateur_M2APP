@@ -52,21 +52,20 @@ public class XMLTest {
     }
 
     @Test
-    public void executeReq() throws SQLException {
-        try {
-            this.srcXML.connexion();
-            this.srcXML.executeReq(reqSrc_1);
-            Assert.assertNotNull(this.srcXML.getStmt());
-            // Vérifie s'il existe au moins un résultat
-            Assert.assertTrue(this.srcXML.getRset().next());
-            this.srcXML.deconnexion();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public void executeReq() {
+        this.srcXML.connexion();
+        this.srcXML.executeReq(reqSrc_1);
+
+        Assert.assertNotNull(this.srcXML.getNodeList());
+        // Vérifie s'il existe au moins un résultat
+        Assert.assertNotEquals(this.srcXML.getNodeList().getLength(), 0);
+
+        this.srcXML.deconnexion();
     }
 
     @Test
     public void getResFromExecuteReq() {
+        /*
         this.srcMySQL.connexion();
         this.srcMySQL.executeReq(reqSrc_1);
 
@@ -74,10 +73,12 @@ public class XMLTest {
         // TODO: Vérifier le résultat de la requête exemple également
 
         this.srcMySQL.deconnexion();
+        */
     }
 
     @Test
     public void tradResToMed() {
+        /*
         List<HashMap<String, Object>> res;
         List<HashMap<String, Object>> tradRes;
 
@@ -97,6 +98,7 @@ public class XMLTest {
         }
 
         this.srcMySQL.deconnexion();
+        */
     }
 
     @Test
