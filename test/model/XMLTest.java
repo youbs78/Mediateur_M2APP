@@ -54,12 +54,14 @@ public class XMLTest {
     @Test
     public void executeReq() {
         this.srcXML.connexion();
-        this.srcXML.executeReq(reqSrc_1);
-
+        this.srcXML.executeReq("reqMed_1");
+        this.srcXML.executeReq("reqMed_2");
+        this.srcXML.executeReq("reqMed_3");
+    /*
         Assert.assertNotNull(this.srcXML.getNodeList());
         // Vérifie s'il existe au moins un résultat
         Assert.assertNotEquals(this.srcXML.getNodeList().getLength(), 0);
-
+    */
         this.srcXML.deconnexion();
     }
 

@@ -29,7 +29,7 @@ public class Main {
                     " GROUP BY Cours.Type; ");
 
         //4. Afficher les étudiants de plus de 32 ans qui suivent le cours de M. Dubois Jean
-        reqSQL.add( " SELECT Etudiant.ID-Etudiant as id, Etudiant.Nom as nom, Etudiant.prenom as prenom," +
+        /*reqSQL.add( " SELECT Etudiant.ID-Etudiant as id, Etudiant.Nom as nom, Etudiant.prenom as prenom," +
                     "   Etudiant.Age as age" +
                     " FROM Etudiant, Inscription, Cours, Enseigne, Enseignant" +
                     " WHERE Etudiant.ID-Etudiant = Inscription.ID-Etudiant" +
@@ -38,7 +38,7 @@ public class Main {
                     "   AND Enseigne.ID-Enseignant = Enseignant.ID-Enseignant " +
                     "   AND Etudiant.Age > 32 " +
                     "   AND LOWER(Enseignant.Nom) = 'dubois' " +
-                    "   AND LOWER(Enseignant.Prenom) = 'jean' ; ");
+                    "   AND LOWER(Enseignant.Prenom) = 'jean' ; "); */
     }
 
     // Instancier un médiateur M ;
@@ -46,15 +46,17 @@ public class Main {
     public static void main(String[] args){
         Mediateur med = new Mediateur();
         List<HashMap<String, Object>> resultatReq;
+        int compteur = 0;
 
         System.out.println("Hello World");
 
         // Parcout des requêtes définit en static
         for(String element : reqSQL){
+            compteur++;
             System.out.println("\n" + element);
             med.sendReq(element);
             med.getResult();
-            resultatReq = med.agregate();
+            resultatReq = med.agregate(compteur);
             afficherResultat(resultatReq);
         }
     }
