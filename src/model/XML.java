@@ -31,7 +31,6 @@ import java.util.List;
 public class XML implements ExtracteurItf {
     private static XML INSTANCE = null; //Singleton pour bonne pratique
     private Document docXML;
-    private NodeList nodeList;
     private String medSQL; //Requête SQL envoyé par le médiateur
     private List<HashMap<String, Object>> resReq;
     private static final HashMap<String, String> TABLE_CORRESPONDANCE = new HashMap<>(); //Table de correspondance en static final pour éviter toutes modifications
@@ -77,10 +76,6 @@ public class XML implements ExtracteurItf {
 
     public Document getDocXML() {
         return docXML;
-    }
-
-    public List<HashMap<String, Object>> getResReq() {
-        return resReq;
     }
 
     public String getMedSQL() {

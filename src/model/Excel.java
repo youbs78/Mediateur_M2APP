@@ -2,6 +2,9 @@ package model;
 
 import contract.ExtracteurItf;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
@@ -21,18 +24,18 @@ import java.sql.SQLException;
 public class Excel implements ExtracteurItf {
     // Singleton pour bonne pratique
     private static Excel INSTANCE = new Excel();
-    private Connection conn;    // Objet connexion une fois celle-ci établie
+    private Connection conn;    // Objet connexion une fois celle-ci ï¿½tablie
     private Statement statement;    // Objet statement une fois la connexion etablie.
-    private ResultSet   rset;   // Représente le résultat de la requéte (recordSet)
-    private String      medSQL; // Requête SQL envoyé par le mediateur
+    private ResultSet   rset;   // Reprï¿½sente le rï¿½sultat de la requï¿½te (recordSet)
+    private String      medSQL; // Requï¿½te SQL envoyï¿½ par le mediateur
     
-    // Création de la table de correspondance en static final pour éviter modification
+    // Crï¿½ation de la table de correspondance en static final pour ï¿½viter modification
     
-    //Nous allons créer deux tables de correspondance, l'une pour les requetes du mediateur 
-    //et l'autre pour les correspondances entre les colonnes renvoyés pas les requetes mediateur et les requetes sources 
+    //Nous allons crï¿½er deux tables de correspondance, l'une pour les requetes du mediateur 
+    //et l'autre pour les correspondances entre les colonnes renvoyï¿½s pas les requetes mediateur et les requetes sources 
     private static final HashMap <String, String> TABLE_CORRESPONDANCE_requetes = new HashMap<>();
     static {
-        //Table de correspondance repondant à la question 2 : Implantation des requetes SQL
+        //Table de correspondance repondant ï¿½ la question 2 : Implantation des requetes SQL
     	TABLE_CORRESPONDANCE_requetes.put( " SELECT Enseignant.ID-Enseignant as id, Enseignant.Nom as nom, Enseignant.Prenom as prenom, SUM(Cours.Heures) as heures " +
                 " FROM   Enseignant, Enseigne, Cours " +
                 " WHERE  Enseignant.ID-Enseignant = Enseigne.ID-Enseignant " +
@@ -62,8 +65,8 @@ public class Excel implements ExtracteurItf {
   
     }
 
-    /** Constructeur redéfini comme étant privé pour interdire
-     *  son appel et forcer a  passer par la méthode
+    /** Constructeur redï¿½fini comme ï¿½tant privï¿½ pour interdire
+     *  son appel et forcer aï¿½ passer par la mï¿½thode
      *  Il marche comme un constructeur normal
      */
     private Excel() {
@@ -92,9 +95,14 @@ public class Excel implements ExtracteurItf {
 
     @Override
     public void connexion() {
+        String rootProject = System.getProperty("user.dir").replaceAll("\\\\", "/");
+        String partialPath = "/data/Source1.xls";
+        String absoluteFilePath = rootProject.concat(partialPath);
+
     	try
 		{
-			Class.forName("com.hxtt.sql.excel.ExcelDriver").newInstance();
+            String driver = "com.hxtt.sql.excel.ExcelDriver";
+			Class.forName(driver).newInstance();
 		}
 		catch (Exception ex)
 		{
@@ -102,17 +110,17 @@ public class Excel implements ExtracteurItf {
 		}
 		try
 		{
-			String url = "jdbc:Excel:/D:/Source1.xls";
+			String url = "jdbc:Excel:/";
+			url = url.concat(absoluteFilePath);
 			
 			this.conn = DriverManager.getConnection(url,"","");
 			statement = conn.createStatement();
 			statement.setFetchSize(10);
-			System.out.println("Connexion etablie avec Source 1");
 			
 		}
 		catch (SQLException ex)
 		{
-			System.err.println("Excel Erreur de connexion à la base de données.");
+			System.err.println("Excel Erreur de connexion ï¿½ la base de donnï¿½es.");
 		}
 		
     }
@@ -123,17 +131,17 @@ public class Excel implements ExtracteurItf {
 		{
 			this.statement.close();
 			this.conn.close();
-			System.out.println("Connexion terminée avec Source 1");
+			System.out.println("Connexion terminï¿½e avec Source 1");
 		
 		}
 		catch (SQLException ex)
 		{
-			System.err.println("Excel Erreur de deconnexion à la base de données");
+			System.err.println("Excel Erreur de deconnexion ï¿½ la base de donnï¿½es");
 		    
 		}
     }
     
-	// Affiche les erreurs quand la connexion a echoué
+	// Affiche les erreurs quand la connexion a echouï¿½
 	public void displaySQLErrors(SQLException e)
  {
 		System.out.println("SQLException: " + e.getMessage());
@@ -142,7 +150,7 @@ public class Excel implements ExtracteurItf {
  }
 
 	
-	//Execution d'une requête
+	//Execution d'une requï¿½te
 	public ResultSet requeteSQL(String requete)
 	{
 		ResultSet resultat = null;
@@ -160,7 +168,7 @@ public class Excel implements ExtracteurItf {
     @Override
     public void setMediateurReq(String reqMed) {
     	this.medSQL = reqMed;
-    	System.out.println("Requete du mediateur transmis à l'extracteur : " + this.medSQL);
+    	System.out.println("Requete du mediateur transmis ï¿½ l'extracteur : " + this.medSQL);
     }
 
     @Override
@@ -172,8 +180,8 @@ public class Excel implements ExtracteurItf {
         for (HashMap.Entry<String, String> entry : TABLE_CORRESPONDANCE_requetes.entrySet()) {
             String key = entry.getKey();
             String value = entry.getValue();
-            // Remplace la valeur clé trouvé
-            // par sa valeur correspondante à la source
+            // Remplace la valeur clï¿½ trouvï¿½
+            // par sa valeur correspondante ï¿½ la source
             reqSrc = reqSrc.replace(key, value);
         }
         System.out.println("Transformation de la requete du mediateur pour l'extracteur : " +reqSrc);
@@ -206,7 +214,7 @@ public class Excel implements ExtracteurItf {
         try{
             ResultSetMetaData metaData = this.rset.getMetaData();
             int columnCount = metaData.getColumnCount();
-            // Crée une liste de hashmap afin d'associer chaque colonne à  sa valeur
+            // Crï¿½e une liste de hashmap afin d'associer chaque colonne ï¿½ sa valeur
             while (this.rset.next()) {
                 HashMap<String, Object> columns = new HashMap<>();
 
@@ -249,9 +257,9 @@ public class Excel implements ExtracteurItf {
             for (HashMap.Entry<String, String> entry : TABLE_CORRESPONDANCE.entrySet()) {
                 String key = entry.getKey();
                 String value = entry.getValue();
-                /*  On retire la ligne avec le nom de colonne correspondant à  la source
+                /*  On retire la ligne avec le nom de colonne correspondant ï¿½ la source
                     puis on le remet avec le nom de colonne correspondant au mediateur
-                    On vérifie que l'entrée correspond avant de la retirer */
+                    On vï¿½rifie que l'entrï¿½e correspond avant de la retirer */
                 if(row.get(value)!=null){
                     Object obj = row.remove(value);
                     row.put(key, obj);
