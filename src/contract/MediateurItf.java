@@ -29,7 +29,7 @@ public interface MediateurItf {
      *
      * @return la liste des résultats des 3 sources agrégés
      */
-    List<HashMap<String, Object>> agregate();
+    List<HashMap<String, Object>> agregate(int numero_requete);
 
 }
 

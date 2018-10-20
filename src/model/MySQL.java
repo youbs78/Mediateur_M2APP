@@ -209,6 +209,7 @@ public class MySQL implements ExtracteurItf {
         return null;
     }
 
+    @SuppressWarnings("Duplicates")
     @Override
     public List<HashMap<String, Object>> tradResToMed(List<HashMap<String, Object>> resSrc) {
         List<HashMap<String, Object>> resMed = new ArrayList<>();
