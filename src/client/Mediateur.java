@@ -60,7 +60,7 @@ public class Mediateur implements MediateurItf {
         String srcReq;
         // La liste de résultat issue directement depuis la source
         List<HashMap<String, Object>> tmp;
-
+/*
         //region Source 1
         this.extracteurSrc1.connexion();
         srcReq = this.extracteurSrc1.reqMedtoReqSrc();
@@ -69,7 +69,7 @@ public class Mediateur implements MediateurItf {
         this.resSrc1 = this.extracteurSrc1.tradResToMed(tmp);
         this.extracteurSrc1.deconnexion();
         //endregion
-
+*/
         //region Source 2
         this.extracteurSrc2.connexion();
         srcReq = this.extracteurSrc2.reqMedtoReqSrc();

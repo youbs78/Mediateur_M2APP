@@ -168,7 +168,7 @@ public class Excel implements ExtracteurItf {
     @Override
     public void setMediateurReq(String reqMed) {
     	this.medSQL = reqMed;
-    	System.out.println("Requete du mediateur transmis � l'extracteur : " + this.medSQL);
+    	//System.out.println("Requete du mediateur transmis � l'extracteur : " + this.medSQL);
     }
 
     @Override
