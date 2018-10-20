@@ -37,7 +37,7 @@ public class Excel implements ExtracteurItf {
                 " FROM   Enseignant, Enseigne, Cours " +
                 " WHERE  Enseignant.ID-Enseignant = Enseigne.ID-Enseignant " +
                 "   AND  Cours.ID-Cours = Enseigne.ID-Cours  " +
-                " GROUP BY Enseignant.ID-Enseignant ;", "select *;"
+                " GROUP BY Enseignant.ID-Enseignant ;", "select Distinct ID, Nom, Prenom, 0 as Heures FROM T_Excel_2006, T_Excel_2007 where Statut='enseignant' ;"
                 										 				);
     	TABLE_CORRESPONDANCE_requetes.put(" SELECT COUNT(Etudiant.ID-Etudiant) as nb_etudiant_francais " +
                 				 " FROM   Etudiant " +
@@ -56,7 +56,13 @@ public class Excel implements ExtracteurItf {
     private static final HashMap <String, String> TABLE_CORRESPONDANCE = new HashMap<>();
     static {
         // region Table Etudiant
-        TABLE_CORRESPONDANCE.put("etudiant.id-etudiant", "count(distinct id)");
+    	TABLE_CORRESPONDANCE.put("enseignant.prenom", "t_excel_2006.prenom");
+    	TABLE_CORRESPONDANCE.put("enseignant.nom", "t_excel_2006.nom");
+    	TABLE_CORRESPONDANCE.put("enseignant.id-enseignant", "t_excel_2006.id");
+    	TABLE_CORRESPONDANCE.put("cours.heures", "heures");
+    	
+    	
+    	TABLE_CORRESPONDANCE.put("etudiant.id-etudiant", "count(distinct id)");
         TABLE_CORRESPONDANCE.put("cours.id-cours", "count(distinct id_cours)");
         TABLE_CORRESPONDANCE.put("cours.type-cours", "t_excel_2006.type_cours");
   
