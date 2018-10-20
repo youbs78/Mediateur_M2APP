@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Excel_JDBC30">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/Excel_JDBC30.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

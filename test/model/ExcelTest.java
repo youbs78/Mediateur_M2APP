@@ -31,7 +31,7 @@ class ExcelTest {
 	static{
 	//region Liste colonne traduite depuis reqSrc_2 attendu
 	key_tradReq_1.add("etudiant.id-etudiant");
-	//endregione
+	//endregion
 	}
 
 	@Test
@@ -48,7 +48,7 @@ class ExcelTest {
 	 this.srcExcel.connexion();
 	 this.srcExcel.deconnexion();
 	 Assert.assertNull(this.srcExcel.getConn());
-	 System.out.println("ExcelTest-Deconnexion s'est bien dï¿½roulï¿½ !");
+	 System.out.println("ExcelTest-Deconnexion s'est bien d?roul? !");
 	 
 	}
 	
@@ -105,7 +105,7 @@ class ExcelTest {
 
 	        this.srcExcel.executeReq(reqSrc_2);
 	        Assert.assertNotNull(this.srcExcel.getStmt());
-	        // VÃ©rifie s'il existe au moins un rÃ©sultat
+	        // Vérifie s'il existe au moins un résultat
 	        Assert.assertTrue(this.srcExcel.getRset().next());
 
 	        this.srcExcel.deconnexion();
@@ -118,7 +118,7 @@ class ExcelTest {
 	        this.srcExcel.executeReq(reqSrc_2);
 
 	        Assert.assertNotNull(this.srcExcel.getResFromExecuteReq());
-	        // TODO: Vérifier le résultat de la requéte exemple également
+	        // TODO: V?rifier le r?sultat de la requ?te exemple ?galement
 	        this.srcExcel.deconnexion();
 	    }
 	
@@ -137,11 +137,12 @@ class ExcelTest {
 	        for (HashMap<String, Object> row : tradRes) {
 	            //On compare les colonnes attendues avec celles obtenues
 	            for(String e : key_tradReq_1){
-	                // On voit s'il existe une valeur attribué à  la clef
+	                // On voit s'il existe une valeur attribu? ? la clef
 	                Assert.assertNotNull(row.getOrDefault(e,null));
 	            }
 	        }
 
 	        this.srcExcel.deconnexion();
 	    }
+
 }

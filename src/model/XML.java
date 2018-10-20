@@ -4,8 +4,10 @@ import contract.ExtracteurItf;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.TypeInfo;
 import org.xml.sax.SAXException;
 
+import javax.swing.table.TableCellEditor;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
@@ -14,6 +16,9 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.annotation.Target;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -26,26 +31,35 @@ import java.util.List;
 public class XML implements ExtracteurItf {
     private static XML INSTANCE = null; //Singleton pour bonne pratique
     private Document docXML;
-    private NodeList nodeList;
     private String medSQL; //Requête SQL envoyé par le médiateur
-    private static final HashMap <String, String> TABLE_CORRESPONDANCE = new HashMap<>(); //Table de correspondance en static final pour éviter toutes modifications
+    private List<HashMap<String, Object>> resReq;
+    private static final HashMap<String, String> TABLE_CORRESPONDANCE = new HashMap<>(); //Table de correspondance en static final pour éviter toutes modifications
     static {
         //region Requête Exercices
-        TABLE_CORRESPONDANCE.put(   " SELECT Enseignant.ID-Enseignant as id, Enseignant.Nom as nom, Enseignant.Prenom as prenom, SUM(Cours.Heures) as heures " +
-                                    " FROM   Enseignant, Enseigne, Cours " +
-                                    " WHERE  Enseignant.ID-Enseignant = Enseigne.ID-Enseignant " +
-                                    "   AND  Cours.ID-Cours = Enseigne.ID-Cours  " +
-                                    " GROUP BY Enseignant.ID-Enseignant ;",
-                                    " XPATH VALEUR ");
-        TABLE_CORRESPONDANCE.put(   " SELECT COUNT(Etudiant.ID-Etudiant) as nb_etudiant_francais " +
-                                    " FROM   Etudiant " +
-                                    " WHERE  Etudiant.Provenance = 'France'; ",
-                                    " XPATH Valeur2 ");
-        TABLE_CORRESPONDANCE.put(   " SELECT Cours.Type as type, COUNT(Cours.Id-Cours) as nb_cours_par_type " +
-                                    " FROM Cours " +
-                                    " GROUP BY Cours.Type; ",
-                                    " XPATH Valeur3 ");
+        TABLE_CORRESPONDANCE.put(" SELECT Enseignant.ID-Enseignant as id, Enseignant.Nom as nom, Enseignant.Prenom as prenom, SUM(Cours.Heures) as heures " +
+                        " FROM   Enseignant, Enseigne, Cours " +
+                        " WHERE  Enseignant.ID-Enseignant = Enseigne.ID-Enseignant " +
+                        "   AND  Cours.ID-Cours = Enseigne.ID-Cours  " +
+                        " GROUP BY Enseignant.ID-Enseignant ;"
+                , "reqMed_1");
+        TABLE_CORRESPONDANCE.put(" SELECT COUNT(Etudiant.ID-Etudiant) as nb_etudiant_francais " +
+                        " FROM   Etudiant " +
+                        " WHERE  Etudiant.Provenance = 'France'; "
+                , "reqMed_2");
+        TABLE_CORRESPONDANCE.put(" SELECT Cours.Type as type, COUNT(Cours.Id-Cours) as nb_cours_par_type " +
+                        " FROM Cours " +
+                        " GROUP BY Cours.Type; "
+                , "reqMed_3");
         //endregion
+        // region Table Traduction
+        TABLE_CORRESPONDANCE.put("enseignant.id", "NumEns");
+        TABLE_CORRESPONDANCE.put("enseignant.nom", "Nom");
+        TABLE_CORRESPONDANCE.put("enseignant.prenom", "Prenom");
+        TABLE_CORRESPONDANCE.put("heures", "Nb_heures");
+        TABLE_CORRESPONDANCE.put("nb_etudiant_francais", "France");
+        TABLE_CORRESPONDANCE.put("cours.type", "Type");
+        TABLE_CORRESPONDANCE.put("nb_cours_par_type", "Nb_Cours");
+        // endregion
     }
 
     //Constructeur par défaut
@@ -64,23 +78,19 @@ public class XML implements ExtracteurItf {
         return docXML;
     }
 
-    public NodeList getNodeList() {
-        return nodeList;
-    }
-
     public String getMedSQL() {
         return medSQL;
     }
 
     @Override
     public void setMediateurReq(String reqMed) {
-        this.medSQL = reqMed.toLowerCase(); //Convertit la chaîne reqMed en minuscules pour permettre la mise en correspondance avec la table de correspondance de la source XML plus tard
+        this.medSQL = reqMed;
     }
 
     @Override
     public void connexion() {
         try {
-            String pathFile = "data/Univ_BD_3.xml" ;
+            String pathFile = "data/Univ_BD_3.xml";
 
             DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
             FileInputStream fileInput = new FileInputStream(pathFile);
@@ -99,59 +109,198 @@ public class XML implements ExtracteurItf {
 
     @Override
     public String reqMedtoReqSrc() {
-        if(!this.getMedSQL().isEmpty()) {
-            //Encore un lower case au cas où
-            String reqSrc = this.medSQL.toLowerCase();
-
-            // Parcourt la table de correspondance afin d'effectuer les correspondances
-            for (HashMap.Entry<String, String> entry : TABLE_CORRESPONDANCE.entrySet()) {
-                //Récupère clé, valeur (correspondance source)
-                String key = entry.getKey();
-                String value = entry.getValue();
-
-                //Remplace la valeur clé trouvée par sa valeur correspondante à la source
-                reqSrc = reqSrc.replace(key, value);
-            }
-            return reqSrc;
-        }else {
-            System.out.println("La requête du médiateur n'est pas définie ! \n." +
-                                " La fonction reqMedtoReqSrc retourne null.");
-            return null;
-        }
+        if (this.medSQL.isEmpty()) return null;
+        // Récupère le nom de la méthode à invoquer pour la requête associée
+        return TABLE_CORRESPONDANCE.getOrDefault(this.medSQL, null);
     }
 
     @Override
     public void executeReq(String reqSrc) {
-        //XPath est utilisé pour le requêtage des données
-        //XPath est un langage de requête pour localiser une portion d'un document XML
+        if (reqSrc == null) return;
+        // Excute la requête via son nom
         try {
-            //Définit la requête
-            XPath xPath = XPathFactory.newInstance().newXPath();
+            this.resReq = (List<HashMap<String, Object>>) this.getClass().getDeclaredMethod(reqSrc).invoke(this);
 
-            //Exemple de requête pour récupérer une liste
-            //String expression = "//Etudiants/Etudiant";
-
-            //Exécute la requête XPATH
-            //Récupère le résultat de l'éxécution
-            this.nodeList = (NodeList) xPath.compile(reqSrc).evaluate(docXML, XPathConstants.NODESET);
-
-        } catch (XPathExpressionException e) {
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace();
         }
     }
 
     @Override
     public List<HashMap<String, Object>> getResFromExecuteReq() {
-        return null;
+        return this.resReq;
     }
 
+    @SuppressWarnings("Duplicates")
     @Override
     public List<HashMap<String, Object>> tradResToMed(List<HashMap<String, Object>> resSrc) {
-        return null;
+        List<HashMap<String, Object>> resMed = new ArrayList<>();
+        String keyType = "cours.type";
+
+        // Loop sur la List<HashMap<>>
+        for (HashMap<String, Object> row : resSrc) {
+            // Parcourt la table de correspondance afin d'effectuer les correspondances
+            // On va convertir les noms de colonne source en nom de colonne global
+            for (HashMap.Entry<String, String> entry : TABLE_CORRESPONDANCE.entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+                /*  On retire la ligne avec le nom de colonne correspondant à la source
+                    puis on le remet avec le nom de colonne correspondant au mediateur
+                    On vérifie que l'entrée correspond avant de la retirer */
+                if(row.get(value)!=null){
+                    Object obj = row.remove(value);
+                    row.put(key, obj);
+                }
+            } //endloop: TABLE_CORRESPONDANCE.entrySet()
+
+            // Traduction de la valeur des types
+            String type = (String) row.getOrDefault(keyType, "");
+            switch(type){
+                case "Cours Magistral":
+                    row.put(keyType, "CM");
+                    break;
+                case "Travaux diriges":
+                    row.put(keyType, "TD");
+                    break;
+                default:
+                    break;
+            }
+            // Alimente la liste traduite pour le mediateur
+            resMed.add(row);
+        } //endloop: resSrc
+
+        return resMed;
+    }
+
+    /**
+     * 1. Afficher pour chaque enseignant, son nombre total d’heures assurées.
+     */
+    private List<HashMap<String, Object>>  reqMed_1() {
+        // Récupère la liste des noeuds avec comme nom "Enseignant"
+        NodeList enseignants = this.docXML.getElementsByTagName("Enseignant");
+        NodeList enseignes;
+        Element noeud;
+        String id, nom, prenom;
+        Integer compteurHeures;
+
+        List<HashMap<String, Object>> resList = new ArrayList<>();
+        Object obj;
+
+        // On boucle sur chaque noeud étudiant trouvé
+        for (int index = 0; index < enseignants.getLength(); ++index) {
+            HashMap<String, Object> resultat = new HashMap<>();
+            // reinit le compteur d'heures
+            compteurHeures = 0;
+            // On un des noeuds étudiant de la liste
+            noeud = (Element) enseignants.item(index);
+
+            /* Dans le noeud courant Enseignant
+             * On récupère le premier noeud qui s'appelle "Provenance"
+             * Puis sa valeur texte */
+            id = noeud.getElementsByTagName("NumEns").item(0).getTextContent();
+            nom = noeud.getElementsByTagName("Nom").item(0).getTextContent();
+            prenom = noeud.getElementsByTagName("Prenom").item(0).getTextContent();
+
+            //On va parcourir tous les noeuds de type "Enseigne"
+            enseignes = noeud.getElementsByTagName("Enseigne");
+            for(int index2 = 0; index2 < enseignes.getLength(); ++index2){
+                noeud = (Element) enseignes.item(index2);
+                compteurHeures += Integer.parseInt(noeud.getElementsByTagName("Nb_heures").item(0).getTextContent());
+            }
+
+            // Si le type est déjà renseigne dans les résultats
+            // On incrémente sa valeur associé
+            resultat.put("NumEns", id);
+            resultat.put("Nom", nom);
+            resultat.put("Prenom", prenom);
+            resultat.put("Nb_heures", compteurHeures);
+
+            resList.add(resultat);
+        }
+
+        return resList;
+    }
+
+    /**
+     * 2. Retourner le nombre d’étudiants dont le pays de Provenance est la ‘France’.
+     */
+    private List<HashMap<String, Object>> reqMed_2() {
+        // Récupère la liste des noeuds avec comme nom "Etudiant"
+        NodeList etudiants = this.docXML.getElementsByTagName("Etudiant");
+        Element noeud;
+        String valeur;
+
+        List<HashMap<String, Object>> resList = new ArrayList<>();
+        HashMap<String, Object> resultat = new HashMap<>();
+        Object obj;
+
+        // On boucle sur chaque noeud étudiant trouvé
+        for (int index = 0; index < etudiants.getLength(); ++index) {
+            // On un des noeuds étudiant de la liste
+            noeud = (Element) etudiants.item(index);
+
+            /* Dans le noeud courant étudiant
+             * On récupère le premier noeud qui s'appelle "Provenance"
+             * Puis sa valeur texte */
+            valeur = noeud.getElementsByTagName("Provenance").item(0).getTextContent();
+
+            // Si "France" est déjà renseigne dans les résultats
+            // On incrémente sa valeur associé
+            if(valeur.equals("France")){
+                obj = resultat.getOrDefault(valeur,0);
+                resultat.put(valeur, ((Integer)obj) + 1);
+            }
+        }
+        resList.add(resultat);
+        return resList;
+    }
+
+    /**
+     * 3. Afficher le nombre de cours par Type (CM, TD ou TP).
+     */
+    private List<HashMap<String, Object>> reqMed_3() {
+        // Récupère la liste des noeuds grâce à son nom
+        NodeList cours = this.docXML.getElementsByTagName("Cours");
+        Element noeud;
+        String valeur;
+
+        List<HashMap<String, Object>> resList = new ArrayList<>();
+        HashMap<String, Object> cm = new HashMap<>();
+        HashMap<String, Object> td = new HashMap<>();
+        Object obj;
+
+        // On boucle sur chaque noeud trouvé
+        // On ignore le premier noeud car il s'agit du root
+        // Il y a 5 occurence de noeud "Cours" pour actuellement seulement 4 cours réel
+        for (int index = 1; index < cours.getLength(); ++index) {
+            // On un des noeuds cours de la liste
+            noeud = (Element) cours.item(index);
+
+            /* Dans le noeud courant cours
+             * On récupère le premier noeud qui s'appelle "Type"
+             * Puis sa valeur texte */
+            valeur = noeud.getElementsByTagName("Type").item(0).getTextContent();
+
+            if(valeur.equals("Cours Magistral")){
+                cm.put("Type",valeur);
+                obj = cm.getOrDefault("Nb_Cours",0);
+                cm.put("Nb_Cours",(Integer)obj + 1);
+            }
+            else if(valeur.equals("Travaux diriges")){
+                td.put("Type",valeur);
+                obj = td.getOrDefault("Nb_Cours",0);
+                td.put("Nb_Cours",(Integer)obj + 1);
+            }
+        }
+
+        resList.add(cm);
+        resList.add(td);
+
+        return resList;
     }
 
     //Connection à la source
-    public void lire_XML() throws SAXException, IOException, ParserConfigurationException {
+    public void lire_XML(){
         this.connexion();
 
         NodeList L;

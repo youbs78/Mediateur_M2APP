@@ -11,14 +11,14 @@ public class Main {
      */
     private static final List<String> reqSQL = new ArrayList<>();
     static{
-        //1. Afficher pour chaque enseignant, son nombre total d'heures assurées
+        //1. Afficher pour chaque enseignant, son nombre total dâ€™heures assurÃ©es.
         reqSQL.add( " SELECT Enseignant.ID-Enseignant as id, Enseignant.Nom as nom, Enseignant.Prenom as prenom, SUM(Cours.Heures) as heures " +
                     " FROM   Enseignant, Enseigne, Cours " +
                     " WHERE  Enseignant.ID-Enseignant = Enseigne.ID-Enseignant " +
                     "   AND  Cours.ID-Cours = Enseigne.ID-Cours  " +
                     " GROUP BY Enseignant.ID-Enseignant ;");
 
-        //2. Retourner le nombre d'étudiants dont le pays de Provenance est la France
+        //2. Retourner le nombre dâ€™Ã©tudiants dont le pays de Provenance est la â€˜Franceâ€™.
         reqSQL.add( " SELECT COUNT(Etudiant.ID-Etudiant) as nb_etudiant_francais " +
                     " FROM   Etudiant " +
                     " WHERE  Etudiant.Provenance = 'France'; ");
@@ -28,13 +28,8 @@ public class Main {
                     " FROM Cours " +
                     " GROUP BY Cours.Type; ");
 
-        //4. Afficher les étudiants de plus de 32 ans qui suivent le cours de M. Dubois Jean
-/*        reqSQL.add( " SELECT Etudiant.ID-Etudiant as id, Etudiant.Nom as nom, Etudiant.prenom as prenom," +
-
-
         //4. Afficher les Ã©tudiants de plus de 32 ans qui suivent le cours de M. Dubois Jean
-        reqSQL.add( " SELECT Etudiant.ID-Etudiant as id, Etudiant.Nom as nom, Etudiant.prenom as prenom," +
-
+        /*reqSQL.add( " SELECT Etudiant.ID-Etudiant as id, Etudiant.Nom as nom, Etudiant.prenom as prenom," +
                     "   Etudiant.Age as age" +
                     " FROM Etudiant, Inscription, Cours, Enseigne, Enseignant" +
                     " WHERE Etudiant.ID-Etudiant = Inscription.ID-Etudiant" +
@@ -43,30 +38,31 @@ public class Main {
                     "   AND Enseigne.ID-Enseignant = Enseignant.ID-Enseignant " +
                     "   AND Etudiant.Age > 32 " +
                     "   AND LOWER(Enseignant.Nom) = 'dubois' " +
-                    "   AND LOWER(Enseignant.Prenom) = 'jean' ; ");*/
+                    "   AND LOWER(Enseignant.Prenom) = 'jean' ; "); */
     }
 
-    // Instancier un médiateur M ;
-    // Faire appel aux classes d'adaptateur de chaque source ;
+    // Instancier un mÃ©diateur M ;
+    // Faire appel aux classes dâ€™adaptateur de chaque source ;
     public static void main(String[] args){
         Mediateur med = new Mediateur();
         List<HashMap<String, Object>> resultatReq;
+        int compteur = 0;
 
-        System.out.println("Hello Mediateur");
+        System.out.println("Hello World");
 
-        // Parcout des requétes définit en static
+        // Parcout des requÃªtes dÃ©finit en static
         for(String element : reqSQL){
+            compteur++;
             System.out.println("\n" + element);
             med.sendReq(element);
             med.getResult();
-            resultatReq = med.agregate();
+            resultatReq = med.agregate(compteur);
             afficherResultat(resultatReq);
         }
     }
 
     private static void afficherResultat(List<HashMap<String, Object>> resultat){
-    	System.out.println("Resultat transformé pour le mediateur");
-    	for(HashMap<String, Object> element : resultat){
+        for(HashMap<String, Object> element : resultat){
             System.out.println(element.toString());
         }
     }
