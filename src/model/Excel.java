@@ -24,7 +24,7 @@ import java.sql.SQLException;
 public class Excel implements ExtracteurItf {
     // Singleton pour bonne pratique
     private static Excel INSTANCE = new Excel();
-    private Connection conn;    // Objet connexion une fois celle-ci �tablie
+    private Connection conn;    // Objet connexion une fois celle-ci �tablie.
     private Statement statement;    // Objet statement une fois la connexion etablie.
     private ResultSet   rset;   // Repr�sente le r�sultat de la requ�te (recordSet)
     private String      medSQL; // Requ�te SQL envoy� par le mediateur
