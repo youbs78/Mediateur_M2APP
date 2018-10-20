@@ -5,5 +5,8 @@
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
 	<classpathentry kind="lib" path="lib/Excel_JDBC30.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ayoub/git/Mediateur_M2APP/lib/hamcrest-core-1.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ayoub/git/Mediateur_M2APP/lib/junit-4.12.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ayoub/git/Mediateur_M2APP/lib/mysql-connector-java-5.1.47.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

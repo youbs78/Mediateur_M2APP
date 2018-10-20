@@ -61,13 +61,13 @@ public class Excel implements ExtracteurItf {
         // region Table Etudiant
     	TABLE_CORRESPONDANCE.put("enseignant.prenom", "t_excel_2006.prenom");
     	TABLE_CORRESPONDANCE.put("enseignant.nom", "t_excel_2006.nom");
-    	TABLE_CORRESPONDANCE.put("enseignant.id-enseignant", "t_excel_2006.id");
-    	TABLE_CORRESPONDANCE.put("cours.heures", "heures");
+    	TABLE_CORRESPONDANCE.put("enseignant.id", "t_excel_2006.id");
+    	TABLE_CORRESPONDANCE.put("heures", "heures");
     	
     	
-    	TABLE_CORRESPONDANCE.put("etudiant.id-etudiant", "count(distinct id)");
-        TABLE_CORRESPONDANCE.put("cours.id-cours", "count(distinct id_cours)");
-        TABLE_CORRESPONDANCE.put("cours.type-cours", "t_excel_2006.type_cours");
+    	TABLE_CORRESPONDANCE.put("nb_etudiant_francais", "count(distinct id)");
+        TABLE_CORRESPONDANCE.put("nb_cours_par_type", "count(distinct id_cours)");
+        TABLE_CORRESPONDANCE.put("cours.type", "t_excel_2006.type_cours");
   
     }
 
@@ -137,7 +137,7 @@ public class Excel implements ExtracteurItf {
 		{
 			this.statement.close();
 			this.conn.close();
-			System.out.println("Connexion termin�e avec Source 1");
+			//System.out.println("Connexion termin�e avec Source 1");
 		
 		}
 		catch (SQLException ex)
@@ -190,7 +190,7 @@ public class Excel implements ExtracteurItf {
             // par sa valeur correspondante � la source
             reqSrc = reqSrc.replace(key, value);
         }
-        System.out.println("Transformation de la requete du mediateur pour l'extracteur : " +reqSrc);
+        //System.out.println("Transformation de la requete du mediateur pour l'extracteur : " +reqSrc);
         return reqSrc;
        
     	
@@ -238,10 +238,10 @@ public class Excel implements ExtracteurItf {
 
                 rows.add(columns);
             }
-            System.out.println("Resultat de l'extracteur : ");
+          /*  System.out.println("Resultat de l'extracteur : ");
             for(HashMap<String, Object> element : rows){
                 System.out.println(element.toString());
-            }
+            }*/
 
             return rows;
 
