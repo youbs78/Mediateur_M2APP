@@ -68,40 +68,12 @@ public class XMLTest {
 
     @Test
     public void getResFromExecuteReq() {
-        /*
-        this.srcMySQL.connexion();
-        this.srcMySQL.executeReq(reqSrc_1);
 
-        Assert.assertNotNull(this.srcMySQL.getResFromExecuteReq());
-        // TODO: Vérifier le résultat de la requête exemple également
-
-        this.srcMySQL.deconnexion();
-        */
     }
 
     @Test
     public void tradResToMed() {
-        /*
-        List<HashMap<String, Object>> res;
-        List<HashMap<String, Object>> tradRes;
 
-        this.srcMySQL.connexion();
-        this.srcMySQL.executeReq(reqSrc_1);
-        res = this.srcMySQL.getResFromExecuteReq();
-        tradRes = this.srcMySQL.tradResToMed(res);
-
-        Assert.assertNotEquals(0, tradRes.size());
-
-        for (HashMap<String, Object> row : tradRes) {
-            //On compare les colonnes attendues avec celles obtenues
-            for(String e : key_tradReq_1){
-                // On voti s'il existe une valeur attribué à la clef
-                Assert.assertNotNull(row.getOrDefault(e,null));
-            }
-        }
-
-        this.srcMySQL.deconnexion();
-        */
     }
 
     @Test
