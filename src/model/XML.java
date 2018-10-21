@@ -28,14 +28,16 @@ import java.util.List;
  * @author arnold
  * @version 0.1
  */
+
 public class XML implements ExtracteurItf {
-    private static XML INSTANCE = null; //Singleton pour bonne pratique
-    private Document docXML;
-    private String medSQL; //Requête SQL envoyé par le médiateur
-    private List<HashMap<String, Object>> resReq;
+    //region Données de la classe
+    private static XML INSTANCE = null; //Singleton pour respecter la bonne pratique
+    private Document docXML; //Désigne le document XML sur lequel on va travailler
+    private String medSQL; //Désigne la requête SQL envoyé par le médiateur
+    private List<HashMap<String, Object>> resReq; //Désigne le résultat de l'exécution de la requête source
     private static final HashMap<String, String> TABLE_CORRESPONDANCE = new HashMap<>(); //Table de correspondance en static final pour éviter toutes modifications
     static {
-        //region Requête Exercices
+        //region Table Requêtes
         TABLE_CORRESPONDANCE.put(" SELECT Enseignant.ID-Enseignant as id, Enseignant.Nom as nom, Enseignant.Prenom as prenom, SUM(Cours.Heures) as heures " +
                         " FROM   Enseignant, Enseigne, Cours " +
                         " WHERE  Enseignant.ID-Enseignant = Enseigne.ID-Enseignant " +
@@ -61,12 +63,15 @@ public class XML implements ExtracteurItf {
         TABLE_CORRESPONDANCE.put("nb_cours_par_type", "Nb_Cours");
         // endregion
     }
+    //endregion
 
-    //Constructeur par défaut
+    //region Constructeurs
+    //Par défeut
     private XML() {
     }
+    //endregion
 
-    //Accesseurs
+    //region Accesseurs
     public static XML getInstance() {
         if (INSTANCE == null) {
             INSTANCE = new XML();
@@ -86,7 +91,11 @@ public class XML implements ExtracteurItf {
     public void setMediateurReq(String reqMed) {
         this.medSQL = reqMed;
     }
+    //endregion
 
+    //region Implémentation des méthodes et fonctions de la classe XML
+
+    //Définit la connexion à la source XML dans docXML
     @Override
     public void connexion() {
         try {
@@ -102,11 +111,13 @@ public class XML implements ExtracteurItf {
         }
     }
 
+    //Ré-initialise la connexion à la source XML à null
     @Override
     public void deconnexion() {
         this.docXML = null;
     }
 
+    //Traduit la requête Médiateur en requête Source
     @Override
     public String reqMedtoReqSrc() {
         if (this.medSQL.isEmpty()) return null;
@@ -114,10 +125,11 @@ public class XML implements ExtracteurItf {
         return TABLE_CORRESPONDANCE.getOrDefault(this.medSQL, null);
     }
 
+    //Invoke l'exécution de la méthode correspondante à la requête Source
     @Override
     public void executeReq(String reqSrc) {
         if (reqSrc == null) return;
-        // Excute la requête via son nom
+        //Excéute la requête correspondante (à travers son nom)
         try {
             this.resReq = (List<HashMap<String, Object>>) this.getClass().getDeclaredMethod(reqSrc).invoke(this);
 
@@ -126,13 +138,15 @@ public class XML implements ExtracteurItf {
         }
     }
 
+    //Retourne le résultat de la requête Source récupéré à travers la variale de la classe resReq
     @Override
     public List<HashMap<String, Object>> getResFromExecuteReq() {
         return this.resReq;
     }
 
-    @SuppressWarnings("Duplicates")
     @Override
+    @SuppressWarnings("Duplicates") //permet à IntelliJ d'ignorer les doublons de lignes de code
+    //Traduit le résultat de la requête Source pour le médiateur
     public List<HashMap<String, Object>> tradResToMed(List<HashMap<String, Object>> resSrc) {
         List<HashMap<String, Object>> resMed = new ArrayList<>();
         String keyType = "cours.type";
@@ -271,7 +285,7 @@ public class XML implements ExtracteurItf {
 
         // On boucle sur chaque noeud trouvé
         // On ignore le premier noeud car il s'agit du root
-        // Il y a 5 occurence de noeud "Cours" pour actuellement seulement 4 cours réel
+        // Il y a 5 occurences de noeud "Cours" pour actuellement seulement 4 cours réel
         for (int index = 1; index < cours.getLength(); ++index) {
             // On un des noeuds cours de la liste
             noeud = (Element) cours.item(index);
@@ -299,8 +313,9 @@ public class XML implements ExtracteurItf {
         return resList;
     }
 
-    //Connection à la source
+    //Lecture des données de la source
     public void lire_XML(){
+        //Connexion à la source
         this.connexion();
 
         NodeList L;
@@ -309,6 +324,7 @@ public class XML implements ExtracteurItf {
         /* Récupération des noeuds de la source XML
          * Cliquez sur l'icône + pour dérouler le code associé au noeud
          */
+
         //region Liste des étudiants
         System.out.println("---------- ETUDIANTS ----------\n");
         NodeList etudiants = this.docXML.getElementsByTagName("Etudiant");
@@ -443,11 +459,11 @@ public class XML implements ExtracteurItf {
 
                 //Enseignements
                 System.out.println("Enseignements : ");
-                NodeList enseignements = this.docXML.getElementsByTagName("Enseigne");
+                NodeList enseignements = E.getElementsByTagName("Enseigne");
                 if (enseignements.getLength() > 0) {
                     for (int iIndex = 0; iIndex < enseignements.getLength(); iIndex++) {
                         //Noeud enseigne
-                        E = (Element) enseignements.item(index);
+                        E = (Element) enseignements.item(iIndex);
 
                         //Données du noeud enseigne courant
                         //Nombre d'heures
@@ -471,7 +487,7 @@ public class XML implements ExtracteurItf {
                         System.out.println("\tNuméro de l'enseignement: " + E_1.getTextContent() + "\n");
                     }
                 } else {
-                    System.out.println("Aucun enseignement \n");
+                    System.out.println("\tAucun enseignement \n");
                 }
             }
 
@@ -484,9 +500,11 @@ public class XML implements ExtracteurItf {
         System.out.println("---------- COURS ----------\n");
 
         NodeList cours = this.docXML.getElementsByTagName("Cours");
+        //La fonction getElementByTagName prend en compte les occurences des noeuds "Cours"
+        //Dans le document XML, on distingue 5 occurrences du noeud "Cours" racine comprise. D'où l'index commence à 1
         if (cours.getLength() > 0) {
             //Pour chaque cours, on récupère ses données ...
-            for (int index = 0; index < cours.getLength(); index++) {
+            for (int index = 1; index < cours.getLength(); index++) {
                 //Noeud enseigne
                 E = (Element) cours.item(index);
 
@@ -516,8 +534,12 @@ public class XML implements ExtracteurItf {
         }
 
         //endregion
+
+        //Déconnexion de la source
+        this.deconnexion();
     }
 
+    //endregion
 }
 
 

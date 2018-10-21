@@ -16,7 +16,8 @@ public class XMLTest {
     private static final String reqMed_1 =  " SELECT Enseignant.ID-Enseignant as id, Enseignant.Nom as nom, " +
                                                     "Enseignant.Prenom as prenom, Enseignant.adresseMail as adresseMail " +
                                             " FROM Enseignant ; ";
-    private static final String reqSrc_1 =  "  ";  //TODO: Faire la requête XPATH
+
+    private static final String reqSrc_1 =  null;
 
     @Test
     public void getInstance() {
@@ -40,7 +41,7 @@ public class XMLTest {
 
     @Test
     public void setMediateurReq() {
-        String reqMed = "Test1";
+        String reqMed = "test1";
         this.srcXML.setMediateurReq(reqMed);
         Assert.assertEquals(reqMed.toLowerCase(), this.srcXML.getMedSQL());
     }
@@ -105,9 +106,6 @@ public class XMLTest {
 
     @Test
     public void lire_XML() {
-
         this.srcXML.lire_XML();
-
-        // System.out.println("XMLTest-lire_XML s'est bien déroulé !");
     }
 }
