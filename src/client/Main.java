@@ -48,8 +48,6 @@ public class Main {
         List<HashMap<String, Object>> resultatReq;
         int compteur = 0;
 
-        System.out.println("Hello World");
-
         // Parcout des requêtes définit en static
         for(String element : reqSQL){
             compteur++;
@@ -57,11 +55,12 @@ public class Main {
             med.sendReq(element);
             med.getResult();
             resultatReq = med.agregate(compteur);
+            System.out.println("____Resultat agrege des 3 sources:____");
             afficherResultat(resultatReq);
         }
     }
 
-    private static void afficherResultat(List<HashMap<String, Object>> resultat){
+    public static void afficherResultat(List<HashMap<String, Object>> resultat){
         for(HashMap<String, Object> element : resultat){
             System.out.println(element.toString());
         }

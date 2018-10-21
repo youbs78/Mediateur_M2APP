@@ -36,24 +36,27 @@ public class Excel implements ExtracteurItf {
     private static final HashMap <String, String> TABLE_CORRESPONDANCE_requetes = new HashMap<>();
     static {
         //Table de correspondance repondant � la question 2 : Implantation des requetes SQL
-    	TABLE_CORRESPONDANCE_requetes.put( " SELECT Enseignant.ID-Enseignant as id, Enseignant.Nom as nom, Enseignant.Prenom as prenom, SUM(Cours.Heures) as heures " +
-                " FROM   Enseignant, Enseigne, Cours " +
-                " WHERE  Enseignant.ID-Enseignant = Enseigne.ID-Enseignant " +
-                "   AND  Cours.ID-Cours = Enseigne.ID-Cours  " +
-                " GROUP BY Enseignant.ID-Enseignant ;", "select Distinct ID, Nom, Prenom, 0 as Heures FROM T_Excel_2006, T_Excel_2007 where Statut='enseignant' ;"
-                										 				);
-    	TABLE_CORRESPONDANCE_requetes.put(" SELECT COUNT(Etudiant.ID-Etudiant) as nb_etudiant_francais " +
-                				 " FROM   Etudiant " +
-                				 " WHERE  Etudiant.Provenance = 'France'; ", 
-        																	"SELECT count(DISTINCT ID) FROM T_Excel_2006, T_Excel_2007 WHERE Provenance ='France' and Statut='etudiant' ");
-				        	
-    	TABLE_CORRESPONDANCE_requetes.put("SELECT Cours.Type as type, COUNT(Cours.Id-Cours) as nb_cours_par_type " +
-                				 " FROM Cours " +
-                				 " GROUP BY Cours.Type; ", 
-                				 						  " SELECT Type_Cours , COUNT( Distinct Id_Cours)" +
-                				 						  " FROM  T_Excel_2006, T_Excel_2007 " +
-        												  " GROUP BY Type_Cours; ");
+    	TABLE_CORRESPONDANCE_requetes.put(  " SELECT Enseignant.ID-Enseignant as id, Enseignant.Nom as nom, Enseignant.Prenom as prenom, SUM(Cours.Heures) as heures " +
+                                            " FROM   Enseignant, Enseigne, Cours " +
+                                            " WHERE  Enseignant.ID-Enseignant = Enseigne.ID-Enseignant " +
+                                            "   AND  Cours.ID-Cours = Enseigne.ID-Cours  " +
+                                            " GROUP BY Enseignant.ID-Enseignant ;",
 
+                                            " select Distinct ID, Nom, Prenom, 0 as Heures FROM T_Excel_2006, T_Excel_2007 where Statut='enseignant' ;");
+
+    	TABLE_CORRESPONDANCE_requetes.put(  " SELECT COUNT(Etudiant.ID-Etudiant) as nb_etudiant_francais " +
+                                            " FROM   Etudiant " +
+                                            " WHERE  Etudiant.Provenance = 'France'; ",
+
+                                            "SELECT count(DISTINCT ID) FROM T_Excel_2006, T_Excel_2007 WHERE Provenance ='France' and Statut='etudiant' ");
+				        	
+    	TABLE_CORRESPONDANCE_requetes.put(  " SELECT Cours.Type as type, COUNT(Cours.Id-Cours) as nb_cours_par_type " +
+                                            " FROM Cours " +
+                                            " GROUP BY Cours.Type; ",
+
+                                            " SELECT Type_Cours , COUNT( Distinct Id_Cours)" +
+                                            " FROM  T_Excel_2006, T_Excel_2007 " +
+                                             " GROUP BY Type_Cours; ");
     }
 
     private static final HashMap <String, String> TABLE_CORRESPONDANCE = new HashMap<>();
@@ -148,7 +151,7 @@ public class Excel implements ExtracteurItf {
     }
     
 	// Affiche les erreurs quand la connexion a echou�
-	public void displaySQLErrors(SQLException e)
+	private void displaySQLErrors(SQLException e)
  {
 		System.out.println("SQLException: " + e.getMessage());
 		System.out.println("SQLStatus: " + e.getSQLState());

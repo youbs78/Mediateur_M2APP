@@ -64,29 +64,50 @@ public class Mediateur implements MediateurItf {
         //region Source 1
         this.extracteurSrc1.connexion();
         srcReq = this.extracteurSrc1.reqMedtoReqSrc();
+
+        System.out.println("____Requete traduite pour source 1____");
+        System.out.println(srcReq);
+
         this.extracteurSrc1.executeReq(srcReq);
         tmp = this.extracteurSrc1.getResFromExecuteReq();
         this.resSrc1 = this.extracteurSrc1.tradResToMed(tmp);
         this.extracteurSrc1.deconnexion();
+
+        System.out.println("____Resulat de la source 1____");
+        Main.afficherResultat(this.resSrc1);
         //endregion
 
         //region Source 2
         this.extracteurSrc2.connexion();
         srcReq = this.extracteurSrc2.reqMedtoReqSrc();
+
+        System.out.println("____Requete traduite pour source 2____");
+        System.out.println(srcReq);
+
         this.extracteurSrc2.executeReq(srcReq);
         tmp = this.extracteurSrc2.getResFromExecuteReq();
         this.resSrc2 = this.extracteurSrc2.tradResToMed(tmp);
         this.extracteurSrc2.deconnexion();
+
+        System.out.println("____Resulat de la source 2____");
+        Main.afficherResultat(this.resSrc2);
         //endregion
 
 
         //region Source 3
         this.extracteurSrc3.connexion();
         srcReq = this.extracteurSrc3.reqMedtoReqSrc();
+
+        System.out.println("____Requete traduite pour source 3____");
+        System.out.println(srcReq);
+
         this.extracteurSrc3.executeReq(srcReq);
         tmp = this.extracteurSrc3.getResFromExecuteReq();
         this.resSrc3 = this.extracteurSrc3.tradResToMed(tmp);
         this.extracteurSrc3.deconnexion();
+
+        System.out.println("____Resulat de la source 3____");
+        Main.afficherResultat(this.resSrc3);
         //endregion
 
     }
